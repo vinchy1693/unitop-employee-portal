@@ -4,6 +4,9 @@
 // =====================================================================
 
 if (session_status() === PHP_SESSION_NONE) {
+    // Own session cookie name, kept distinct from the admin site's "admin_sid"
+    // so a login on one application cannot be replayed against the other.
+    session_name("portal_sid");
     session_start();
 }
 

@@ -6,8 +6,8 @@ $empId = $user["employee_id"];
 
 $method = $_SERVER["REQUEST_METHOD"];
 
-// ---- GET: list own payslips ----
-if ($method === "GET") {
+// ---- GET: list own payslips (only when no specific payslip was requested) ----
+if ($method === "GET" && !isset($_GET["id"])) {
     $stmt = $pdo->prepare(
         "SELECT ps.payslip_id, ps.basic_pay, ps.overtime_pay, ps.gross_pay,
                 ps.total_deductions, ps.net_pay,
