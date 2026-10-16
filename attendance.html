@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Attendance — UNITOP Employee Portal</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<nav class="employee-nav">
+    <span class="brand">UNITOP <small>Employee Portal</small></span>
+    <div class="nav-links">
+        <a href="index.html" data-page="index.html">Dashboard</a>
+        <a href="payslips.html" data-page="payslips.html">My Payslips</a>
+        <a href="attendance.html" data-page="attendance.html">My Attendance</a>
+        <a href="leave.html" data-page="leave.html">My Leave</a>
+    </div>
+</nav>
+<div class="container">
+
+    <h1>My Attendance</h1>
+    <p class="subtitle">Your daily time-in and time-out records.</p>
+
+    <div id="msg" class="msg hidden"></div>
+
+    <div class="card">
+        <form id="filter-form" style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+            <div style="min-width:160px;">
+                <label style="display:block;font-size:12.5px;color:#555;margin-bottom:4px;font-weight:600;">From</label>
+                <input type="date" id="from_date" required style="width:100%;padding:8px 10px;border:1px solid #cbd5e1;border-radius:6px;font-size:13.5px;">
+            </div>
+            <div style="min-width:160px;">
+                <label style="display:block;font-size:12.5px;color:#555;margin-bottom:4px;font-weight:600;">To</label>
+                <input type="date" id="to_date" required style="width:100%;padding:8px 10px;border:1px solid #cbd5e1;border-radius:6px;font-size:13.5px;">
+            </div>
+            <button class="btn btn-primary" type="submit">Apply</button>
+        </form>
+    </div>
+
+    <div id="kpi-grid" class="kpi-grid">
+        <div class="kpi-tile"><div class="kpi-label">Loading…</div></div>
+    </div>
+
+    <div class="card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th class="col-center">Time In</th>
+                    <th class="col-center">Time Out</th>
+                    <th style="text-align:right;">Hours</th>
+                    <th style="text-align:right;">Late (min)</th>
+                    <th class="col-center">Status</th>
+                </tr>
+            </thead>
+            <tbody id="rows">
+                <tr class="loading-row"><td colspan="6">Loading…</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script src="assets/js/axios.min.js"></script>
+<script src="assets/js/sweetalert2.min.js"></script>
+<script src="assets/js/dialogs.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/attendance.js"></script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Dashboard — UNITOP Employee Portal</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<nav class="employee-nav">
+    <span class="brand">UNITOP <small>Employee Portal</small></span>
+    <div class="nav-links">
+        <a href="index.html" data-page="index.html">Dashboard</a>
+        <a href="payslips.html" data-page="payslips.html">My Payslips</a>
+        <a href="attendance.html" data-page="attendance.html">My Attendance</a>
+        <a href="leave.html" data-page="leave.html">My Leave</a>
+    </div>
+</nav>
+<div class="container">
+
+    <h1>Hello!</h1>
+    <p class="subtitle">Your personal payroll summary.</p>
+
+    <div id="kpi-grid" class="kpi-grid">
+        <div class="kpi-tile"><div class="kpi-label">Loading…</div></div>
+    </div>
+
+</div>
+
+<script src="assets/js/axios.min.js"></script>
+<script src="assets/js/sweetalert2.min.js"></script>
+<script src="assets/js/dialogs.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/dashboard.js"></script>
+</body>
+</html>

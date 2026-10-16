@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Payslips — UNITOP Employee Portal</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<nav class="employee-nav">
+    <span class="brand">UNITOP <small>Employee Portal</small></span>
+    <div class="nav-links">
+        <a href="index.html" data-page="index.html">Dashboard</a>
+        <a href="payslips.html" data-page="payslips.html">My Payslips</a>
+        <a href="attendance.html" data-page="attendance.html">My Attendance</a>
+        <a href="leave.html" data-page="leave.html">My Leave</a>
+    </div>
+</nav>
+<div class="container">
+
+    <h1>My Payslips</h1>
+    <p class="subtitle">Every payslip you've received. Click any row to see the full breakdown.</p>
+
+    <div id="msg" class="msg hidden"></div>
+
+    <div class="card">
+        <div class="toolbar">
+            <strong id="record-count">0 record(s)</strong>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Period</th>
+                    <th>Type</th>
+                    <th style="text-align:right;">Gross Pay</th>
+                    <th style="text-align:right;">Deductions</th>
+                    <th style="text-align:right;">Net Pay</th>
+                    <th class="col-center"></th>
+                </tr>
+            </thead>
+            <tbody id="rows">
+                <tr class="loading-row"><td colspan="6">Loading…</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<!-- Payslip detail modal -->
+<div id="detail-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+        <button class="modal-close" id="detail-close">&times;</button>
+        <div id="detail-body">Loading…</div>
+        <div class="modal-actions">
+            <button class="btn btn-plain" id="detail-print">Print</button>
+            <button class="btn btn-primary" id="detail-done">Close</button>
+        </div>
+    </div>
+</div>
+
+<script src="assets/js/axios.min.js"></script>
+<script src="assets/js/sweetalert2.min.js"></script>
+<script src="assets/js/dialogs.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/payslips.js"></script>
+</body>
+</html>
