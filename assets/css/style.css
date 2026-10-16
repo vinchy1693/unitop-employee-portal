@@ -1,25 +1,102 @@
 /* =====================================================================
    UNITOP Employee Portal — Stylesheet (Responsive)
+
+   Theme: CSS custom properties. `:root` holds the light palette and every
+   surface / text / border colour below is drawn from it; the dark palette
+   is a pure variable override in `html[data-theme="dark"]`, so no component
+   rule needs to know which theme is active.
+
+   Brand: UNITOP blue / red / yellow.
    ===================================================================== */
 
 * { box-sizing: border-box; }
 
 :root {
+    color-scheme: light;
+
+    /* ---- Brand ---- */
     --blue:       #0038A8;
     --blue-dark:  #002a7a;
-    --blue-lite:  #e6eefc;
-    --red:        #CE1126;
+    --blue-deep:  #001a4d;   /* gradient / nav shadow depth, fixed both themes */
+    --blue-lite:  #e6eefc;   /* also used as the focus ring tint */
+    --red:        #CE1126;   /* red as TEXT / border accent     */
+    --red-dark:   #a50d1e;
+    --red-fill:   #CE1126;   /* red as a FILL behind a label    */
     --red-lite:   #fde8e8;
     --yellow:     #FCD116;
     --yellow-dark:#d4af0a;
     --yellow-lite:#fff8d6;
     --green:      #1e7d32;
     --green-lite: #dff5e1;
+
+    /* ---- Surfaces & text ---- */
     --bg:         #f5f6fa;
     --card:       #ffffff;
     --text:       #1a1f2e;
     --muted:      #6b7280;
     --border:     #e5e7eb;
+    --border-mid: #cbd5e1;
+
+    /* ---- Neutrals & effects ---- */
+    --neutral:    #e5e7eb;   /* plain / secondary button faces, empty chips */
+    --neutral-hover: #d5d8dd;
+    --hover:      #fafbfd;   /* table row hover */
+    --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.05);
+    --shadow-md:  0 8px 20px rgba(0, 0, 0, 0.08);
+    --shadow-lg:  0 20px 60px rgba(0, 0, 0, 0.3);
+    --focus:      var(--blue);
+
+    /* ---- Accent fills & their labels -------------------------------
+       --on-accent is the text colour for anything sitting on an accent
+       FILL (primary buttons, status chips, filled pills). It flips to a
+       dark navy in the dark theme because the accents brighten there —
+       white on #6f9bff is only ~2.7:1. Keep this value in step with the
+       admin app; the two are meant to look like one product.          */
+    --on-accent:  #ffffff;   /* on accent fills: light theme          */
+    --disabled-bg: #6b7280;  /* disabled button face                  */
+
+    /* ---- Nav chrome -------------------------------------------------
+       The nav is always the deep brand blue, so it must NOT consume the
+       brightened --blue from the dark block. Its labels stay light in
+       both themes, hence its own --nav-text rather than --on-accent.  */
+    --nav-bg:        #0038A8;
+    --nav-text:      #ffffff;
+    --nav-text-dim:  rgba(255, 255, 255, 0.85);
+    --nav-hover:     rgba(255, 255, 255, 0.12);
+    --nav-accent:    #FCD116;   /* brand yellow, fixed in both themes */
+    --nav-accent-hover: #d4af0a;
+    /* Text on the yellow active pill — ~11.9:1 against #ffd94a and
+       ~4.0:1 against light-mode #FCD116. Same value in both themes.   */
+    --nav-active-text: #0d1424;
+}
+
+/* ---- Dark palette: variables only -------------------------------- */
+html[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0f1420;  --card: #171e2e;  --text: #e8ecf5;  --muted: #9aa4b8;
+    --border: #263049; --border-mid: #33405e;
+    --blue-lite: #16233d; --red-lite: #3a1a20; --yellow-lite: #3a3320; --green-lite: #16301d;
+    --blue: #6f9bff; --blue-dark: #4d84ff;
+    --red: #ff6b7d;
+    /* The logout / danger FILL stays deep enough for its white label; the
+       bright --red above is for text and borders only. */
+    --red-fill: #b3324a;
+    --yellow: #ffd94a; --yellow-dark: #e6c132;
+    --green: #5fd07a;
+
+    --red-dark:   #d9536a;
+    --neutral:    #2b344b;
+    --neutral-hover: #38425e;
+    --hover:      #1d2537;
+    --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.4);
+    --shadow-md:  0 8px 20px rgba(0, 0, 0, 0.45);
+    --shadow-lg:  0 20px 60px rgba(0, 0, 0, 0.55);
+
+    /* Labels on the brightened accent fills go dark (see :root note) */
+    --on-accent:  #0d1424;
+    --disabled-bg: #495570;
+    /* --nav-* tokens and --blue-deep are deliberately NOT overridden:
+       the nav bar and the login gradient stay deep brand blue. */
 }
 
 html, body { height: 100%; }
@@ -32,14 +109,72 @@ body {
     font-size: 14px;
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
+    transition: background-color .18s ease, color .18s ease, border-color .18s ease;
+}
+
+/* =====================================================================
+   THEME TOGGLE
+   ===================================================================== */
+.theme-toggle {
+    background: var(--nav-hover);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    color: var(--nav-text);
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1;
+    padding: 7px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.15s, border-color 0.15s;
+}
+.theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.26);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+.theme-toggle:focus-visible {
+    outline: 2px solid var(--nav-accent);
+    outline-offset: 2px;
+}
+
+/* Pages without the nav (login) — floating toggle in the page corner.
+   Dark translucent pill over the blue login gradient, so the label stays
+   light regardless of --on-accent. */
+.theme-toggle-floating {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 200;
+    background: rgba(10, 20, 40, 0.55);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: var(--nav-text);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
+
+/* =====================================================================
+   FOCUS VISIBILITY
+   ===================================================================== */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+    border-radius: 6px;
 }
 
 /* =====================================================================
    TOP NAV
    ===================================================================== */
 .employee-nav {
-    background: var(--blue);
-    color: #fff;
+    /* Deep brand blue in BOTH themes — deliberately not var(--blue), which
+       brightens in the dark block and would leave white labels unreadable. */
+    background: var(--nav-bg);
+    color: var(--nav-text);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -54,7 +189,7 @@ body {
     font-weight: 800;
     font-size: 16px;
     letter-spacing: 0.5px;
-    color: #fff;
+    color: var(--nav-text);
     white-space: nowrap;
 }
 .employee-nav .brand small {
@@ -62,15 +197,16 @@ body {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1.2px;
-    color: var(--yellow);
+    color: var(--nav-accent);
     margin-left: 8px;
 }
 .nav-links {
     display: flex;
+    align-items: center;
     gap: 6px;
 }
 .nav-links a {
-    color: rgba(255,255,255,0.85);
+    color: var(--nav-text-dim);
     text-decoration: none;
     font-size: 13.5px;
     font-weight: 500;
@@ -80,13 +216,18 @@ body {
     white-space: nowrap;
 }
 .nav-links a:hover {
-    background: rgba(255,255,255,0.12);
-    color: #fff;
+    background: var(--nav-hover);
+    color: var(--nav-text);
 }
+/* Active page — yellow chip on the blue bar, dark label in both themes */
 .nav-links a.active {
-    background: var(--yellow);
-    color: var(--blue-dark);
+    background: var(--nav-accent);
+    color: var(--nav-active-text);
     font-weight: 700;
+}
+.nav-links a.active:hover {
+    background: var(--nav-accent-hover);
+    color: var(--nav-active-text);
 }
 
 .nav-user {
@@ -103,16 +244,19 @@ body {
 .nav-user-name {
     font-size: 13px;
     font-weight: 600;
-    color: #fff;
+    color: var(--nav-text);
 }
 .nav-user-role {
     font-size: 10.5px;
-    color: var(--yellow);
+    color: var(--nav-accent);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 .nav-logout {
-    background: var(--red);
+    background: var(--red-fill);
+    /* Always white: --red-fill stays deep enough for a white label in both
+       themes (≈5.6:1 light, ≈5.2:1 dark), matching how the admin app keeps
+       its danger buttons white-on-red. */
     color: #fff !important;
     padding: 6px 14px;
     border-radius: 6px;
@@ -122,7 +266,7 @@ body {
     transition: background 0.15s;
     white-space: nowrap;
 }
-.nav-logout:hover { background: #a50d1e; }
+.nav-logout:hover { background: var(--red-dark); }
 
 /* =====================================================================
    CONTAINER
@@ -146,18 +290,18 @@ h1 { font-size: 26px; margin: 0 0 6px; font-weight: 700; letter-spacing: -0.3px;
 }
 .kpi-tile {
     display: block;
-    background: #fff;
+    background: var(--card);
     border-radius: 12px;
     padding: 20px 22px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: var(--shadow-sm);
     border: 1px solid var(--border);
     border-left: 4px solid var(--border);
     text-decoration: none;
     color: inherit;
-    transition: box-shadow 0.15s, transform 0.12s;
+    transition: box-shadow 0.15s, transform 0.12s, background-color .18s ease, border-color .18s ease;
 }
 .kpi-tile:hover {
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow-md);
     transform: translateY(-2px);
 }
 .kpi-tile.kpi-blue   { border-left-color: var(--blue); }
@@ -190,13 +334,20 @@ h1 { font-size: 26px; margin: 0 0 6px; font-weight: 700; letter-spacing: -0.3px;
    CARDS
    ===================================================================== */
 .card {
-    background: #fff;
+    background: var(--card);
     border-radius: 12px;
     padding: 24px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: var(--shadow-sm);
     border: 1px solid var(--border);
     margin-bottom: 20px;
+    transition: background-color .18s ease, color .18s ease, border-color .18s ease;
 }
+.card h3 {
+    font-size: 16px;
+    letter-spacing: -0.2px;
+}
+.card > .card,
+.card + .card { margin-top: 0; }
 
 /* =====================================================================
    TABLES
@@ -219,7 +370,19 @@ th {
     letter-spacing: 0.5px;
     font-weight: 700;
 }
-tbody tr:hover { background: #fafbfd; }
+tbody tr:hover { background: var(--hover); }
+
+/* Utility classes used by the page scripts (previously unstyled) */
+.col-center { text-align: center; }
+.badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.6;
+    white-space: nowrap;
+}
 
 /* =====================================================================
    BUTTONS
@@ -236,11 +399,34 @@ tbody tr:hover { background: #fafbfd; }
     font-family: inherit;
     transition: background 0.12s, transform 0.05s;
 }
-.btn-primary { background: var(--blue); color: #fff; }
+.btn-primary { background: var(--blue); color: var(--on-accent); }
 .btn-primary:hover { background: var(--blue-dark); }
-.btn-primary:disabled { background: #9fb0cc; cursor: not-allowed; }
-.btn-plain { background: #e5e7eb; color: #333; }
-.btn-plain:hover { background: #d5d8dd; }
+.btn-primary:disabled { background: var(--disabled-bg); color: var(--on-accent); cursor: not-allowed; }
+.btn-plain { background: var(--neutral); color: var(--text); }
+.btn-plain:hover { background: var(--neutral-hover); }
+
+/* =====================================================================
+   FORMS
+   ===================================================================== */
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="number"],
+input[type="search"],
+select,
+textarea {
+    background-color: var(--card);
+    color: var(--text);
+    font-family: inherit;
+}
+select option {
+    background-color: var(--card);
+    color: var(--text);
+}
+/* Date/time picker glyph is near-black by default on a dark surface */
+html[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.8);
+}
 
 /* =====================================================================
    MESSAGES
@@ -260,7 +446,9 @@ tbody tr:hover { background: #fafbfd; }
    LOGIN
    ===================================================================== */
 .login-body {
-    background: linear-gradient(135deg, var(--blue) 0%, #001a4d 100%);
+    /* Fixed deep-blue backdrop, like the nav — the brand gradient should not
+       brighten in the dark theme just because --blue does. */
+    background: linear-gradient(135deg, #0038A8 0%, var(--blue-deep) 100%);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -269,11 +457,12 @@ tbody tr:hover { background: #fafbfd; }
 }
 .login-wrap { width: 100%; max-width: 420px; }
 .login-card {
-    background: #fff;
+    background: var(--card);
     border-radius: 14px;
     padding: 40px 36px 32px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    box-shadow: var(--shadow-lg);
     border-top: 5px solid var(--yellow);
+    transition: background-color .18s ease, color .18s ease, border-color .18s ease;
 }
 .login-brand { text-align: center; margin-bottom: 30px; }
 .login-brand h1 {
@@ -295,14 +484,14 @@ tbody tr:hover { background: #fafbfd; }
 .login-field label {
     display: block;
     font-size: 12.5px;
-    color: #4b5563;
+    color: var(--muted);
     margin-bottom: 6px;
     font-weight: 600;
 }
 .login-field input {
     width: 100%;
     padding: 11px 14px;
-    border: 1px solid #cbd5e1;
+    border: 1px solid var(--border-mid);
     border-radius: 8px;
     font-size: 14px;
     font-family: inherit;
@@ -311,7 +500,11 @@ tbody tr:hover { background: #fafbfd; }
 .login-field input:focus {
     outline: none;
     border-color: var(--blue);
-    box-shadow: 0 0 0 3px rgba(0,56,168,0.14);
+    box-shadow: 0 0 0 3px var(--blue-lite);
+}
+.login-field input:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
 }
 .login-btn {
     width: 100%;
@@ -324,7 +517,7 @@ tbody tr:hover { background: #fafbfd; }
     text-align: center;
     margin-top: 26px;
     font-size: 11px;
-    color: #9ca3af;
+    color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -334,7 +527,7 @@ tbody tr:hover { background: #fafbfd; }
    ===================================================================== */
 .loading-row td, .empty-row td {
     text-align: center;
-    color: #888;
+    color: var(--muted);
     padding: 28px;
     font-style: italic;
 }
@@ -356,13 +549,14 @@ tbody tr:hover { background: #fafbfd; }
 }
 .modal-overlay.hidden { display: none; }
 .modal-content {
-    background: #fff;
+    background: var(--card);
     border-radius: 12px;
     max-width: 780px;
     width: 100%;
     padding: 28px 32px;
     position: relative;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    box-shadow: var(--shadow-lg);
+    transition: background-color .18s ease, color .18s ease, border-color .18s ease;
 }
 .modal-close {
     position: absolute;
@@ -372,10 +566,10 @@ tbody tr:hover { background: #fafbfd; }
     border: none;
     font-size: 26px;
     line-height: 1;
-    color: #9ca3af;
+    color: var(--muted);
     cursor: pointer;
 }
-.modal-close:hover { color: #1a1f2e; }
+.modal-close:hover { color: var(--text); }
 .modal-actions {
     margin-top: 22px;
     display: flex;
@@ -395,7 +589,7 @@ tbody tr:hover { background: #fafbfd; }
     text-align: right;
     font-size: 12px;
     line-height: 1.6;
-    color: #4b5563;
+    color: var(--muted);
 }
 .payslip-doc .line {
     display: flex;
@@ -403,6 +597,82 @@ tbody tr:hover { background: #fafbfd; }
     padding: 5px 0;
     font-size: 13px;
 }
+
+/* =====================================================================
+   QR CODE CARD
+   The QR itself must stay dark-on-white to remain scannable, so the code
+   keeps a white plate in both themes while the surrounding card adapts.
+   ===================================================================== */
+#qr-display { color: var(--text); }
+#qr-card h3 { color: var(--text); }
+/* The scanner needs dark modules on a light plate; a slightly softened plate
+   reads better against the dark card than pure white while keeping ~14:1
+   against the #0038A8 modules. */
+html[data-theme="dark"] #qr-holder[style*="background:#fff"] {
+    background-color: #eef2fb !important;
+}
+
+/* Payslip NET PAY band — a large surface, so it keeps the deep brand fill
+   rather than the brightened dark-mode accent. Its label goes white there
+   (light accent blue on deep blue is only ~3.7:1); the yellow amount is
+   left as-is at ~6.7:1. */
+html[data-theme="dark"] .payslip-doc > div[style*="#0038A8"] {
+    background-color: var(--nav-bg) !important;
+}
+html[data-theme="dark"] .payslip-doc > div[style*="#0038A8"] > span:first-child {
+    color: #ffffff !important;
+}
+
+/* =====================================================================
+   THEME BRIDGE — legacy hardcoded colours emitted by the page scripts
+   ---------------------------------------------------------------------
+   attendance.js / leaves.js / payslips.js build their markup with inline
+   colour literals (e.g. the QR caption, the payslip header block, the
+   "View →" link). Those scripts are out of scope for this change, so the
+   dark theme remaps the exact literals they emit — value for value — via
+   attribute selectors, keeping the fix purely declarative in CSS. If the
+   scripts are ever refactored onto variables, delete this whole section.
+   ===================================================================== */
+html[data-theme="dark"] [style*="#1a1f2e"] { color: #e8ecf5 !important; }
+html[data-theme="dark"] [style*="#6b7280"] { color: #9aa4b8 !important; }
+html[data-theme="dark"] [style*="#888"]     { color: #9aa4b8 !important; }
+html[data-theme="dark"] [style*="#555"]     { color: #9aa4b8 !important; }
+html[data-theme="dark"] [style*="#4b5563"]  { color: #9aa4b8 !important; }
+html[data-theme="dark"] [style*="#666"]     { color: #9aa4b8 !important; }
+html[data-theme="dark"] [style*="#0038A8"]  { color: #6f9bff !important; }
+html[data-theme="dark"] [style*="#b3261e"]  { color: #ff6b7d !important; }
+/* Error tiles the scripts build inline still use brand red #CE1126, which is
+   too dark on a dark card — hand them the theme's red accent instead. */
+html[data-theme="dark"] .kpi-value[style*="#CE1126"] { color: var(--red) !important; }
+html[data-theme="dark"] .kpi-tile[style*="#CE1126"] { border-left-color: var(--red) !important; }
+html[data-theme="dark"] [style*="#e5e7eb"]  { border-color: #33405e !important; }
+html[data-theme="dark"] [style*="#cbd5e1"]  { border-color: #33405e !important; }
+html[data-theme="dark"] [style*="#f5f6fa"]  { background-color: #101728 !important; }
+html[data-theme="dark"] [style*="#fde8e8"]  { background-color: #3a1a20 !important; }
+html[data-theme="dark"] [style*="#dff5e1"]  { background-color: #16301d !important; }
+/* Small status chips: the chip itself (background) is remapped below so the
+   label keeps a legible surface under it in the dark theme. */
+html[data-theme="dark"] [style*="background:#fef3c7"],
+html[data-theme="dark"] [style*="background: #fef3c7"] { background-color: #4a3a12 !important; }
+html[data-theme="dark"] [style*="#92400e"]  { color: #ffd94a !important; }
+html[data-theme="dark"] [style*="#0369a1"]  { color: #6f9bff !important; }
+/* On the white QR plate the light accent would be unreadable */
+html[data-theme="dark"] #qr-holder[style*="#0038A8"] { border-color: #0038A8 !important; }
+/* Chip plates that have no dark counterpart in the light palette keep their
+   own light literal, so give them a dark plate here. */
+html[data-theme="dark"] [style*="background:#e0f2fe"],
+html[data-theme="dark"] [style*="background: #e0f2fe"] { background-color: #16233d !important; }
+html[data-theme="dark"] [style*="background:#6b7280"],
+html[data-theme="dark"] [style*="background: #6b7280"] { background-color: #2b344b !important; }
+html[data-theme="dark"] [style*="#1e7d32"]  { color: #5fd07a !important; }
+html[data-theme="dark"] [style*="#6b7280"]  { color: #9aa4b8 !important; }
+/* Table rows keep --text so they stay readable over the dark hover surface */
+html[data-theme="dark"] tbody [style*="#888"] { color: #9aa4b8 !important; }
+/* The payslip header band and report titles are brand blue: keep the deep
+   brand fill (the accent --blue brightens in dark mode) so white / light
+   labels on it stay legible. */
+html[data-theme="dark"] .report-header { border-bottom-color: var(--nav-bg); }
+html[data-theme="dark"] .payslip-doc h4 { color: #6f9bff !important; }
 
 /* =====================================================================
    RESPONSIVE — Tablet (≤ 900px)
@@ -454,6 +724,7 @@ tbody tr:hover { background: #fafbfd; }
     .nav-user-name { font-size: 12px; }
     .nav-user-role { font-size: 9.5px; }
     .nav-logout { padding: 5px 10px; font-size: 11.5px; }
+    .theme-toggle { padding: 6px 10px; font-size: 11.5px; }
 
     .nav-links {
         overflow-x: auto;
@@ -571,6 +842,7 @@ tbody tr:hover { background: #fafbfd; }
     }
     .nav-user-info { text-align: left; }
     .nav-links { order: 3; }
+    .theme-toggle-floating { top: 10px; right: 10px; }
 
     h1 { font-size: 20px; }
 
@@ -601,7 +873,8 @@ tbody tr:hover { background: #fafbfd; }
 @media (hover: none) and (pointer: coarse) {
     .kpi-tile:hover {
         transform: none;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        box-shadow: var(--shadow-sm);
     }
     .btn { min-height: 40px; }
+    .theme-toggle { min-height: 36px; }
 }

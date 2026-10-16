@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>(function(){try{var t=localStorage.getItem('unitop-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Employee Login — UNITOP</title>
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="login-body">
+
+<button type="button" class="theme-toggle theme-toggle-floating" data-theme-toggle>🌙 Dark</button>
 
 <div class="login-wrap">
     <div class="login-card">
@@ -37,5 +40,6 @@
 
 <script src="assets/js/axios.min.js"></script>
 <script src="assets/js/login.js"></script>
+<script src="assets/js/theme.js"></script>
 </body>
 </html>
