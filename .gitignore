@@ -1,0 +1,15 @@
+# Logs and temp
+*.log
+*.tmp
+
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Backups
+*.bak
+*.zip
