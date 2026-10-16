@@ -19,17 +19,45 @@
 <div class="container">
 
     <h1>My Attendance</h1>
-    <p class="subtitle">Your daily time-in and time-out records.</p>
+    <p class="subtitle">Show your QR code to the office scanner to clock in or out.</p>
 
     <div id="msg" class="msg hidden"></div>
 
+    <!-- MY QR CODE -->
+    <div class="card" id="qr-card">
+        <h3 style="margin-top:0;">My QR Code</h3>
+        <p style="margin:0 0 14px;font-size:13px;color:#666;">
+            Hold your phone up to the scanner. The system will automatically clock you in or out.
+        </p>
+        <div id="qr-display">
+            <div style="text-align:center;padding:30px;color:#888;">Loading…</div>
+        </div>
+
+        <!-- Fallback when the camera / office scanner cannot be used -->
+        <div style="margin-top:18px;padding-top:16px;border-top:1px solid #e5e7eb;">
+            <div style="font-size:13px;font-weight:600;color:#1a1f2e;margin-bottom:4px;">Scanner not working?</div>
+            <p style="margin:0 0 10px;font-size:12.5px;color:#666;">
+                Your QR code value is filled in below. Just press <strong>Record attendance</strong> to clock
+                yourself in or out without the office scanner.
+            </p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <input type="text" id="manual-code" placeholder="UNITOP-…" autocomplete="off"
+                       style="flex:1;min-width:240px;padding:9px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:13.5px;font-family:monospace;">
+                <button class="btn btn-primary" id="manual-submit" type="button">Record attendance</button>
+            </div>
+            <div id="manual-result" class="msg hidden" style="margin-top:10px;"></div>
+        </div>
+    </div>
+
+    <!-- ATTENDANCE HISTORY -->
     <div class="card">
-        <form id="filter-form" style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
-            <div style="min-width:160px;">
+        <h3 style="margin-top:0;">Attendance History</h3>
+        <form id="filter-form" style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:14px;">
+            <div style="min-width:140px;">
                 <label style="display:block;font-size:12.5px;color:#555;margin-bottom:4px;font-weight:600;">From</label>
                 <input type="date" id="from_date" required style="width:100%;padding:8px 10px;border:1px solid #cbd5e1;border-radius:6px;font-size:13.5px;">
             </div>
-            <div style="min-width:160px;">
+            <div style="min-width:140px;">
                 <label style="display:block;font-size:12.5px;color:#555;margin-bottom:4px;font-weight:600;">To</label>
                 <input type="date" id="to_date" required style="width:100%;padding:8px 10px;border:1px solid #cbd5e1;border-radius:6px;font-size:13.5px;">
             </div>
@@ -64,6 +92,7 @@
 <script src="assets/js/axios.min.js"></script>
 <script src="assets/js/sweetalert2.min.js"></script>
 <script src="assets/js/dialogs.js"></script>
+<script src="assets/js/qrcode.min.js"></script>
 <script src="assets/js/api.js"></script>
 <script src="assets/js/attendance.js"></script>
 </body>

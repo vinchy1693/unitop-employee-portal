@@ -2,11 +2,10 @@
 // employee_portal/assets/js/attendance.js
 // =====================================================================
 
-const form     = document.getElementById("filter-form");
-const kpiGrid  = document.getElementById("kpi-grid");
-const rowsEl   = document.getElementById("rows");
-
-function formatDateLong(s) { return s; }
+const form        = document.getElementById("filter-form");
+const kpiGrid     = document.getElementById("kpi-grid");
+const rowsEl      = document.getElementById("rows");
+const qrDisplay   = document.getElementById("qr-display");
 
 function statusBadge(status, late) {
     if (status === "Clocked In") return `<span class="badge" style="background:#e0f2fe;color:#0369a1;">Clocked In</span>`;
@@ -15,6 +14,59 @@ function statusBadge(status, late) {
     return `<span class="badge" style="background:#fde8e8;color:#b3261e;">${escapeHtml(status ?? "—")}</span>`;
 }
 
+// =====================================================================
+// QR CODE
+// =====================================================================
+async function loadMyQR() {
+    try {
+        const { data } = await api.get("me_qr.php");
+        const qr = data.data;
+
+        qrDisplay.innerHTML = `
+            <div style="text-align:center;">
+                <div id="qr-holder" style="display:inline-block;padding:14px;background:#fff;border:3px solid #0038A8;border-radius:12px;"></div>
+                <div style="margin-top:14px;font-size:13px;color:#6b7280;">
+                    <div style="font-weight:600;color:#1a1f2e;">Issued: ${escapeHtml(qr.issued_date)}</div>
+                    <div style="margin-top:4px;">Show this code to the office scanner</div>
+                    <div style="margin-top:8px;font-family:monospace;font-size:11.5px;word-break:break-all;">${escapeHtml(qr.code_value)}</div>
+                </div>
+            </div>
+        `;
+
+        // Prefill the manual fallback box with this employee's own code.
+        const manualEl = document.getElementById("manual-code");
+        if (manualEl) manualEl.value = qr.code_value;
+
+        // Render the QR
+        const holder = document.getElementById("qr-holder");
+        new QRCode(holder, {
+            text: qr.code_value,
+            width: 240,
+            height: 240,
+            colorDark: "#0038A8",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H,
+        });
+
+    } catch (err) {
+        // No QR yet, or error
+        qrDisplay.innerHTML = `
+            <div style="text-align:center;padding:30px 20px;color:#6b7280;">
+                <div style="font-size:42px;margin-bottom:10px;">📷</div>
+                <div style="font-size:14px;font-weight:600;color:#1a1f2e;margin-bottom:6px;">
+                    No QR code on file
+                </div>
+                <div style="font-size:12.5px;">
+                    Please ask HR to generate a QR code for you.
+                </div>
+            </div>
+        `;
+    }
+}
+
+// =====================================================================
+// ATTENDANCE HISTORY
+// =====================================================================
 async function loadData() {
     const from = document.getElementById("from_date").value;
     const to   = document.getElementById("to_date").value;
@@ -76,6 +128,46 @@ function renderRows(rows) {
     `).join("");
 }
 
+// =====================================================================
+// MANUAL FALLBACK — record attendance by submitting the QR value
+// =====================================================================
+const manualBtn    = document.getElementById("manual-submit");
+const manualInput  = document.getElementById("manual-code");
+const manualResult = document.getElementById("manual-result");
+
+function showManualResult(kind, text) {
+    if (!manualResult) return;
+    manualResult.classList.remove("hidden");
+    manualResult.style.display    = "block";
+    manualResult.style.padding    = "10px 12px";
+    manualResult.style.borderRadius = "6px";
+    manualResult.style.fontSize   = "13px";
+    manualResult.style.background = kind === "error" ? "#fde8e8" : "#dff5e1";
+    manualResult.style.color      = kind === "error" ? "#b3261e" : "#1e7d32";
+    manualResult.textContent      = text;
+}
+
+if (manualBtn && manualInput) {
+    const submitManual = async () => {
+        const code = (manualInput.value || "").trim();
+        if (!code) { showManualResult("error", "Enter your QR code value first."); return; }
+        manualBtn.disabled = true;
+        try {
+            const { data } = await api.post("me_scan_attendance.php", { code_value: code });
+            showManualResult("success", data.message || "Attendance recorded.");
+            loadData();
+        } catch (err) {
+            showManualResult("error", apiErrorMessage(err));
+        } finally {
+            manualBtn.disabled = false;
+        }
+    };
+    manualBtn.addEventListener("click", submitManual);
+    manualInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") { e.preventDefault(); submitManual(); }
+    });
+}
+
 form.addEventListener("submit", (e) => { e.preventDefault(); loadData(); });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -85,5 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("from_date").value = `${y}-${m}-01`;
     const last = new Date(y, now.getMonth() + 1, 0).getDate();
     document.getElementById("to_date").value = `${y}-${m}-${String(last).padStart(2, "0")}`;
+
+    loadMyQR();
     loadData();
 });

@@ -1,5 +1,5 @@
 /* =====================================================================
-   UNITOP Employee Portal — Stylesheet
+   UNITOP Employee Portal — Stylesheet (Responsive)
    ===================================================================== */
 
 * { box-sizing: border-box; }
@@ -34,6 +34,9 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+/* =====================================================================
+   TOP NAV
+   ===================================================================== */
 .employee-nav {
     background: var(--blue);
     color: #fff;
@@ -52,6 +55,7 @@ body {
     font-size: 16px;
     letter-spacing: 0.5px;
     color: #fff;
+    white-space: nowrap;
 }
 .employee-nav .brand small {
     font-size: 10.5px;
@@ -73,6 +77,7 @@ body {
     padding: 7px 14px;
     border-radius: 6px;
     transition: background 0.12s, color 0.12s;
+    white-space: nowrap;
 }
 .nav-links a:hover {
     background: rgba(255,255,255,0.12);
@@ -115,9 +120,13 @@ body {
     font-weight: 600;
     text-decoration: none !important;
     transition: background 0.15s;
+    white-space: nowrap;
 }
 .nav-logout:hover { background: #a50d1e; }
 
+/* =====================================================================
+   CONTAINER
+   ===================================================================== */
 .container {
     max-width: 1100px;
     margin: 32px auto;
@@ -126,6 +135,9 @@ body {
 h1 { font-size: 26px; margin: 0 0 6px; font-weight: 700; letter-spacing: -0.3px; }
 .subtitle { color: var(--muted); margin: 0 0 24px; font-size: 13.5px; }
 
+/* =====================================================================
+   KPI TILES
+   ===================================================================== */
 .kpi-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -174,6 +186,9 @@ h1 { font-size: 26px; margin: 0 0 6px; font-weight: 700; letter-spacing: -0.3px;
     color: var(--muted);
 }
 
+/* =====================================================================
+   CARDS
+   ===================================================================== */
 .card {
     background: #fff;
     border-radius: 12px;
@@ -183,6 +198,9 @@ h1 { font-size: 26px; margin: 0 0 6px; font-weight: 700; letter-spacing: -0.3px;
     margin-bottom: 20px;
 }
 
+/* =====================================================================
+   TABLES
+   ===================================================================== */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -203,6 +221,9 @@ th {
 }
 tbody tr:hover { background: #fafbfd; }
 
+/* =====================================================================
+   BUTTONS
+   ===================================================================== */
 .btn {
     display: inline-block;
     padding: 8px 16px;
@@ -221,6 +242,9 @@ tbody tr:hover { background: #fafbfd; }
 .btn-plain { background: #e5e7eb; color: #333; }
 .btn-plain:hover { background: #d5d8dd; }
 
+/* =====================================================================
+   MESSAGES
+   ===================================================================== */
 .msg {
     padding: 12px 16px;
     border-radius: 8px;
@@ -232,6 +256,9 @@ tbody tr:hover { background: #fafbfd; }
 .msg.error   { background: var(--red-lite);   color: var(--red);   border-left: 4px solid var(--red); }
 .msg.hidden  { display: none; }
 
+/* =====================================================================
+   LOGIN
+   ===================================================================== */
 .login-body {
     background: linear-gradient(135deg, var(--blue) 0%, #001a4d 100%);
     min-height: 100vh;
@@ -302,6 +329,9 @@ tbody tr:hover { background: #fafbfd; }
     letter-spacing: 1px;
 }
 
+/* =====================================================================
+   LOADING / EMPTY STATES
+   ===================================================================== */
 .loading-row td, .empty-row td {
     text-align: center;
     color: #888;
@@ -310,7 +340,9 @@ tbody tr:hover { background: #fafbfd; }
 }
 .hidden { display: none !important; }
 
-/* Modal styles for payslip detail */
+/* =====================================================================
+   MODAL (payslip detail)
+   ===================================================================== */
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -350,11 +382,12 @@ tbody tr:hover { background: #fafbfd; }
     justify-content: flex-end;
     gap: 10px;
 }
+
 .report-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    border-bottom: 2px solid #0038A8;
+    border-bottom: 2px solid var(--blue);
     padding-bottom: 12px;
     margin-bottom: 18px;
 }
@@ -369,4 +402,206 @@ tbody tr:hover { background: #fafbfd; }
     justify-content: space-between;
     padding: 5px 0;
     font-size: 13px;
+}
+
+/* =====================================================================
+   RESPONSIVE — Tablet (≤ 900px)
+   ===================================================================== */
+@media (max-width: 900px) {
+    .employee-nav {
+        padding: 10px 16px;
+        height: auto;
+        min-height: 58px;
+        flex-wrap: wrap;
+        row-gap: 8px;
+    }
+    .employee-nav .brand { font-size: 15px; }
+    .nav-links {
+        order: 3;
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 4px;
+        padding-bottom: 4px;
+    }
+    .nav-links a {
+        font-size: 13px;
+        padding: 6px 12px;
+    }
+    .nav-user { margin-left: auto; }
+
+    .container {
+        padding: 0 16px;
+        margin: 20px auto;
+    }
+}
+
+/* =====================================================================
+   RESPONSIVE — Mobile (≤ 640px)
+   ===================================================================== */
+@media (max-width: 640px) {
+    body { font-size: 13.5px; }
+
+    .employee-nav { padding: 12px 14px; }
+    .employee-nav .brand { font-size: 14px; }
+    .employee-nav .brand small {
+        display: block;
+        font-size: 9.5px;
+        letter-spacing: 1px;
+        margin-left: 0;
+        margin-top: 2px;
+    }
+    .nav-user { gap: 8px; }
+    .nav-user-name { font-size: 12px; }
+    .nav-user-role { font-size: 9.5px; }
+    .nav-logout { padding: 5px 10px; font-size: 11.5px; }
+
+    .nav-links {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-links a {
+        flex-shrink: 0;
+        padding: 6px 10px;
+        font-size: 12.5px;
+    }
+
+    h1 { font-size: 22px; }
+    .subtitle { font-size: 13px; margin-bottom: 18px; }
+
+    .container {
+        padding: 0 14px;
+        margin: 18px auto;
+    }
+
+    .kpi-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    .kpi-tile { padding: 16px 18px; }
+    .kpi-value { font-size: 22px; }
+
+    .card {
+        padding: 18px 16px;
+        border-radius: 10px;
+    }
+
+     /* Table — let it scroll naturally, don't squeeze columns */
+        /* Table — scroll the card horizontally, table stays intact */
+    .card {
+        overflow-x: auto;
+    }
+    .card table {
+        min-width: 600px;
+        width: 100%;
+    }
+    .card table th,
+    .card table td {
+        white-space: nowrap;
+    }
+    th, td {
+        padding: 8px 10px;
+        font-size: 12.5px;
+    }
+
+    /* Filter forms stack */
+    .card form > div[style*="display:flex"],
+    .card form > div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+        display: block !important;
+    }
+    .card form > div > div { margin-bottom: 10px; }
+    .card form button {
+        width: 100%;
+        padding: 10px;
+    }
+
+    #leave-form > div {
+        display: block !important;
+    }
+    #leave-form > div > div { margin-bottom: 12px; }
+
+    .modal-overlay {
+        padding: 16px 10px;
+        align-items: flex-start;
+    }
+    .modal-content {
+        padding: 20px 16px;
+        border-radius: 10px;
+        max-width: 100%;
+    }
+    .modal-actions {
+        flex-direction: column-reverse;
+    }
+    .modal-actions .btn {
+        width: 100%;
+        padding: 11px;
+    }
+
+    .payslip-doc > div[style*="display:grid"] {
+        display: block !important;
+    }
+    .payslip-doc > div[style*="display:grid"] > div {
+        margin-bottom: 10px;
+    }
+    .report-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .report-meta { text-align: left; }
+    .report-header h2 { font-size: 20px; }
+}
+
+/* =====================================================================
+   RESPONSIVE — Small mobile (≤ 420px)
+   ===================================================================== */
+@media (max-width: 420px) {
+    .employee-nav { padding: 10px 12px; }
+    .employee-nav .brand {
+        font-size: 13px;
+        width: 100%;
+        text-align: center;
+    }
+    .nav-user {
+        width: 100%;
+        justify-content: space-between;
+        order: 2;
+    }
+    .nav-user-info { text-align: left; }
+    .nav-links { order: 3; }
+
+    h1 { font-size: 20px; }
+
+    .kpi-tile { padding: 14px 16px; }
+    .kpi-value { font-size: 20px; }
+    .kpi-label { font-size: 10.5px; }
+
+    th, td {
+        padding: 7px 8px;
+        font-size: 12px;
+    }
+
+    .modal-content { padding: 16px 14px; }
+}
+
+/* =====================================================================
+   RESPONSIVE — Landscape phones
+   ===================================================================== */
+@media (max-width: 900px) and (orientation: landscape) {
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* =====================================================================
+   TOUCH DEVICES — remove hover lift
+   ===================================================================== */
+@media (hover: none) and (pointer: coarse) {
+    .kpi-tile:hover {
+        transform: none;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .btn { min-height: 40px; }
 }
