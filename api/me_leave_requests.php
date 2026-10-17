@@ -50,14 +50,26 @@ if ($method === "POST") {
         respond(false, "The selected range has no working days.", null, 422);
     }
 
+    // Name the conflicting leave, so "you already have a leave" is not mistaken
+    // for a leave of the type being filed.
     $stmt = $pdo->prepare(
-        "SELECT leave_id FROM leave_requests
-         WHERE employee_id = ? AND status IN ('Pending','Approved')
-           AND NOT (end_date < ? OR start_date > ?)"
+        "SELECT lr.leave_id, lr.start_date, lr.end_date, lr.status,
+                COALESCE(lt.name, 'Leave') AS type_name
+         FROM leave_requests lr
+         LEFT JOIN leave_types lt ON lt.leave_type_id = lr.leave_type_id
+         WHERE lr.employee_id = ? AND lr.status IN ('Pending','Approved')
+           AND NOT (lr.end_date < ? OR lr.start_date > ?)
+         ORDER BY lr.start_date
+         LIMIT 1"
     );
     $stmt->execute([$empId, $start, $end]);
-    if ($stmt->fetchColumn()) {
-        respond(false, "You already have a pending or approved leave overlapping those dates.", null, 409);
+    $conflict = $stmt->fetch();
+    if ($conflict) {
+        respond(false,
+            "You already have an overlapping leave: {$conflict['type_name']} "
+            . "({$conflict['status']}) from {$conflict['start_date']} to {$conflict['end_date']}. "
+            . "Cancel it, or choose dates outside that range.",
+            ["conflicts_with" => $conflict], 409);
     }
 
     $stmt = $pdo->prepare(
