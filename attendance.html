@@ -4,6 +4,7 @@
 <script>(function(){try{var t=localStorage.getItem('unitop-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0038A8">
 <title>My Attendance — UNITOP Employee Portal</title>
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -13,83 +14,110 @@
     <div class="nav-links">
         <a href="index.html" data-page="index.html">Dashboard</a>
         <a href="payslips.html" data-page="payslips.html">My Payslips</a>
-        <a href="attendance.html" data-page="attendance.html">My Attendance</a>
+        <a href="attendance.html" data-page="attendance.html" aria-current="page">My Attendance</a>
         <a href="leave.html" data-page="leave.html">My Leave</a>
         <button type="button" class="theme-toggle" data-theme-toggle>🌙 Dark</button>
     </div>
 </nav>
-<div class="container">
 
-    <h1>My Attendance</h1>
-    <p class="subtitle">Show your QR code to the office scanner to clock in or out.</p>
+<main class="container">
+
+    <header class="page-head">
+        <div class="page-head-main">
+            <p class="eyebrow">Attendance</p>
+            <h1>My Attendance</h1>
+            <p class="subtitle">Show your QR code to the office scanner to clock in or out.</p>
+        </div>
+        <div class="page-head-actions">
+            <a class="btn btn-plain" href="#history">Attendance history</a>
+        </div>
+    </header>
 
     <div id="msg" class="msg hidden"></div>
 
-    <!-- MY QR CODE -->
+    <!-- ================= MY QR CODE — the hero of this page ================= -->
     <div class="card" id="qr-card">
-        <h3 style="margin-top:0;">My QR Code</h3>
-        <p style="margin:0 0 14px;font-size:13px;color:#666;">
-            Hold your phone up to the scanner. The system will automatically clock you in or out.
-        </p>
+        <div class="card-head">
+            <div>
+                <h2 class="card-title">My QR code</h2>
+                <p class="card-sub">Hold your phone up to the scanner. It clocks you in or out automatically.</p>
+            </div>
+        </div>
+
         <div id="qr-display">
-            <div style="text-align:center;padding:30px;color:#888;">Loading…</div>
+            <div class="card-sub">Loading your code…</div>
         </div>
 
-        <!-- Fallback when the camera / office scanner cannot be used -->
-        <div style="margin-top:18px;padding-top:16px;border-top:1px solid #e5e7eb;">
-            <div style="font-size:13px;font-weight:600;color:#1a1f2e;margin-bottom:4px;">Scanner not working?</div>
-            <p style="margin:0 0 10px;font-size:12.5px;color:#666;">
-                Your QR code value is filled in below. Just press <strong>Record attendance</strong> to clock
-                yourself in or out without the office scanner.
-            </p>
-            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <!-- Fallback when the scanner cannot be used. Deliberately secondary. -->
+        <div class="manual-fallback">
+            <div class="manual-head">
+                <span class="manual-icon" aria-hidden="true">⌨</span>
+                <div>
+                    <h3 class="manual-title">Scanner not working?</h3>
+                    <p class="manual-note">
+                        Your code value is already filled in below. Press
+                        <strong>Record attendance</strong> to clock in or out without the scanner.
+                    </p>
+                </div>
+            </div>
+
+            <label class="field-label" for="manual-code">QR code value</label>
+            <div class="manual-row">
                 <input type="text" id="manual-code" placeholder="UNITOP-…" autocomplete="off"
-                       style="flex:1;min-width:240px;padding:9px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:13.5px;font-family:monospace;">
-                <button class="btn btn-primary" id="manual-submit" type="button">Record attendance</button>
+                       spellcheck="false" autocapitalize="off">
+                <button class="btn btn-outline" id="manual-submit" type="button">Record attendance</button>
             </div>
-            <div id="manual-result" class="msg hidden" style="margin-top:10px;"></div>
+            <div id="manual-result" class="msg hidden" role="status" aria-live="polite"></div>
         </div>
     </div>
 
-    <!-- ATTENDANCE HISTORY -->
-    <div class="card">
-        <h3 style="margin-top:0;">Attendance History</h3>
-        <form id="filter-form" style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:14px;">
-            <div style="min-width:140px;">
-                <label style="display:block;font-size:12.5px;color:#555;margin-bottom:4px;font-weight:600;">From</label>
-                <input type="date" id="from_date" required style="width:100%;padding:8px 10px;border:1px solid #cbd5e1;border-radius:6px;font-size:13.5px;">
-            </div>
-            <div style="min-width:140px;">
-                <label style="display:block;font-size:12.5px;color:#555;margin-bottom:4px;font-weight:600;">To</label>
-                <input type="date" id="to_date" required style="width:100%;padding:8px 10px;border:1px solid #cbd5e1;border-radius:6px;font-size:13.5px;">
-            </div>
-            <button class="btn btn-primary" type="submit">Apply</button>
-        </form>
-    </div>
-
+    <!-- ================= THIS MONTH AT A GLANCE ================= -->
     <div id="kpi-grid" class="kpi-grid">
         <div class="kpi-tile"><div class="kpi-label">Loading…</div></div>
     </div>
 
-    <div class="card">
-        <table>
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th class="col-center">Time In</th>
-                    <th class="col-center">Time Out</th>
-                    <th style="text-align:right;">Hours</th>
-                    <th style="text-align:right;">Late (min)</th>
-                    <th class="col-center">Status</th>
-                </tr>
-            </thead>
-            <tbody id="rows">
-                <tr class="loading-row"><td colspan="6">Loading…</td></tr>
-            </tbody>
-        </table>
+    <!-- ================= ATTENDANCE HISTORY ================= -->
+    <div class="card" id="history">
+        <div class="card-head">
+            <div>
+                <h2 class="card-title">Attendance history</h2>
+                <p class="card-sub">Pick a date range, then apply.</p>
+            </div>
+            <span class="scroll-hint" aria-hidden="true">Swipe →</span>
+        </div>
+
+        <form id="filter-form" class="filter-form">
+            <div class="field">
+                <label class="field-label" for="from_date">From</label>
+                <input type="date" id="from_date" name="from_date" required>
+            </div>
+            <div class="field">
+                <label class="field-label" for="to_date">To</label>
+                <input type="date" id="to_date" name="to_date" required>
+            </div>
+            <button class="btn btn-primary" type="submit">Apply</button>
+        </form>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col" class="col-center">Time In</th>
+                        <th scope="col" class="col-center">Time Out</th>
+                        <th scope="col" style="text-align:right;">Hours</th>
+                        <th scope="col" style="text-align:right;">Late (min)</th>
+                        <th scope="col" class="col-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="rows">
+                    <tr class="loading-row"><td colspan="6">Loading…</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-</div>
+</main>
 
 <script src="assets/js/axios.min.js"></script>
 <script src="assets/js/sweetalert2.min.js"></script>

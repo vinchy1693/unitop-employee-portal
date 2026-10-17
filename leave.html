@@ -4,6 +4,7 @@
 <script>(function(){try{var t=localStorage.getItem('unitop-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0038A8">
 <title>My Leave — UNITOP Employee Portal</title>
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -14,72 +15,105 @@
         <a href="index.html" data-page="index.html">Dashboard</a>
         <a href="payslips.html" data-page="payslips.html">My Payslips</a>
         <a href="attendance.html" data-page="attendance.html">My Attendance</a>
-        <a href="leave.html" data-page="leave.html">My Leave</a>
+        <a href="leave.html" data-page="leave.html" aria-current="page">My Leave</a>
         <button type="button" class="theme-toggle" data-theme-toggle>🌙 Dark</button>
     </div>
 </nav>
-<div class="container">
 
-    <h1>My Leave</h1>
-    <p class="subtitle">Your leave balances and requests.</p>
+<main class="container">
+
+    <header class="page-head">
+        <div class="page-head-main">
+            <p class="eyebrow">Leave</p>
+            <h1>My Leave</h1>
+            <p class="subtitle">Check your balances, file a request, and track what HR has decided.</p>
+        </div>
+        <div class="page-head-actions">
+            <a class="btn btn-primary" href="#leave-form">File a request</a>
+        </div>
+    </header>
 
     <div id="msg" class="msg hidden"></div>
 
-    <!-- BALANCES -->
+    <!-- ================= BALANCES ================= -->
     <div class="card">
-        <h3 style="margin-top:0;">Leave Balances</h3>
+        <div class="card-head">
+            <div>
+                <h2 class="card-title">Leave balances</h2>
+                <p class="card-sub">Days still available to you this year.</p>
+            </div>
+        </div>
         <div id="balances-grid" class="kpi-grid">
             <div class="kpi-tile"><div class="kpi-label">Loading…</div></div>
         </div>
     </div>
 
-    <!-- FILE REQUEST -->
+    <!-- ================= FILE A REQUEST ================= -->
     <div class="card">
-        <h3 style="margin-top:0;">File a Leave Request</h3>
+        <div class="card-head">
+            <div>
+                <h2 class="card-title">File a leave request</h2>
+                <p class="card-sub">Pick a type and a date range — weekends are not counted.</p>
+            </div>
+        </div>
+
         <form id="leave-form">
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px;">
-                <div>
-                    <label style="display:block;font-size:12.5px;color:#555;margin-bottom:4px;font-weight:600;">Leave Type</label>
-                    <select id="leave_type_id" required style="width:100%;padding:9px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:13.5px;">
+            <div class="form-grid">
+                <div class="field">
+                    <label class="field-label" for="leave_type_id">Leave type</label>
+                    <select id="leave_type_id" name="leave_type_id" required>
                         <option value="">-- Select --</option>
                     </select>
                 </div>
-                <div>
-                    <label style="display:block;font-size:12.5px;color:#555;margin-bottom:4px;font-weight:600;">Start Date</label>
-                    <input type="date" id="start_date" required style="width:100%;padding:9px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:13.5px;">
+                <div class="field">
+                    <label class="field-label" for="start_date">Start date</label>
+                    <input type="date" id="start_date" name="start_date" required>
                 </div>
-                <div>
-                    <label style="display:block;font-size:12.5px;color:#555;margin-bottom:4px;font-weight:600;">End Date</label>
-                    <input type="date" id="end_date" required style="width:100%;padding:9px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:13.5px;">
+                <div class="field">
+                    <label class="field-label" for="end_date">End date</label>
+                    <input type="date" id="end_date" name="end_date" required>
                 </div>
             </div>
-            <button class="btn btn-primary" type="submit">File Request</button>
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit">File request</button>
+                <p class="form-note">You will be asked to confirm before it is sent to HR.</p>
+            </div>
         </form>
     </div>
 
-    <!-- MY REQUESTS -->
-    <div class="card">
-        <div class="toolbar" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-            <strong id="record-count">0 record(s)</strong>
+    <!-- ================= MY REQUESTS ================= -->
+    <div class="card" id="requests">
+        <div class="card-head">
+            <div>
+                <h2 class="card-title">My requests</h2>
+                <p class="card-sub">Only requests still pending can be cancelled.</p>
+            </div>
+            <div class="card-head-side">
+                <span class="count-pill" id="record-count">0 record(s)</span>
+                <span class="scroll-hint" aria-hidden="true">Swipe →</span>
+            </div>
         </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Leave Type</th>
-                    <th>Start</th>
-                    <th>End</th>
-                    <th class="col-center">Days</th>
-                    <th class="col-center">Status</th>
-                    <th class="col-center">Actions</th>
-                </tr>
-            </thead>
-            <tbody id="rows">
-                <tr class="loading-row"><td colspan="6">Loading…</td></tr>
-            </tbody>
-        </table>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Leave Type</th>
+                        <th scope="col">Start</th>
+                        <th scope="col">End</th>
+                        <th scope="col" class="col-center">Days</th>
+                        <th scope="col" class="col-center">Status</th>
+                        <th scope="col" class="col-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="rows">
+                    <tr class="loading-row"><td colspan="6">Loading…</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-</div>
+</main>
 
 <script src="assets/js/axios.min.js"></script>
 <script src="assets/js/sweetalert2.min.js"></script>

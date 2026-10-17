@@ -4,6 +4,7 @@
 <script>(function(){try{var t=localStorage.getItem('unitop-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0038A8">
 <title>Employee Login — UNITOP</title>
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -11,32 +12,32 @@
 
 <button type="button" class="theme-toggle theme-toggle-floating" data-theme-toggle>🌙 Dark</button>
 
-<div class="login-wrap">
+<main class="login-wrap">
     <div class="login-card">
         <div class="login-brand">
             <h1>UNITOP</h1>
-            <div class="login-sub">Employee Portal</div>
+            <p class="login-sub">Employee Portal</p>
+            <p class="login-tagline">Log in with the username and password HR gave you.</p>
         </div>
 
-        <div id="msg" class="msg hidden"></div>
+        <div id="msg" class="msg hidden" role="status" aria-live="polite"></div>
 
         <form id="login-form">
             <div class="login-field">
                 <label for="username">Username</label>
-                <input type="text" id="username" autocomplete="username" required autofocus>
+                <input type="text" id="username" name="username" autocomplete="username"
+                       autocapitalize="none" spellcheck="false" required autofocus>
             </div>
             <div class="login-field">
                 <label for="password">Password</label>
-                <input type="password" id="password" autocomplete="current-password" required>
+                <input type="password" id="password" name="password" autocomplete="current-password" required>
             </div>
             <button class="btn btn-primary login-btn" type="submit" id="login-btn">Log In</button>
         </form>
 
-        <div class="login-footer">
-            UNITOP Payroll System — Employee Self-Service
-        </div>
+        <p class="login-footer">UNITOP Payroll System — Employee Self-Service</p>
     </div>
-</div>
+</main>
 
 <script src="assets/js/axios.min.js"></script>
 <script src="assets/js/login.js"></script>

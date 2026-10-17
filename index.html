@@ -4,6 +4,7 @@
 <script>(function(){try{var t=localStorage.getItem('unitop-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0038A8">
 <title>My Dashboard — UNITOP Employee Portal</title>
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -11,23 +12,33 @@
 <nav class="employee-nav">
     <span class="brand">UNITOP <small>Employee Portal</small></span>
     <div class="nav-links">
-        <a href="index.html" data-page="index.html">Dashboard</a>
+        <a href="index.html" data-page="index.html" aria-current="page">Dashboard</a>
         <a href="payslips.html" data-page="payslips.html">My Payslips</a>
         <a href="attendance.html" data-page="attendance.html">My Attendance</a>
         <a href="leave.html" data-page="leave.html">My Leave</a>
         <button type="button" class="theme-toggle" data-theme-toggle>🌙 Dark</button>
     </div>
 </nav>
-<div class="container">
 
-    <h1>Hello!</h1>
-    <p class="subtitle">Your personal payroll summary.</p>
+<main class="container">
+
+    <header class="page-head">
+        <div class="page-head-main">
+            <p class="eyebrow">Employee self-service</p>
+            <h1>Hello!</h1>
+            <p class="subtitle">Your payslips, attendance and leave — all in one place.</p>
+        </div>
+        <div class="page-head-actions">
+            <a class="btn btn-primary" href="attendance.html">Show my QR code</a>
+            <a class="btn btn-plain" href="leave.html">File leave</a>
+        </div>
+    </header>
 
     <div id="kpi-grid" class="kpi-grid">
         <div class="kpi-tile"><div class="kpi-label">Loading…</div></div>
     </div>
 
-</div>
+</main>
 
 <script src="assets/js/axios.min.js"></script>
 <script src="assets/js/sweetalert2.min.js"></script>
