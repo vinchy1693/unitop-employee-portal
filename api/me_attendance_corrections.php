@@ -206,7 +206,22 @@ if ($type === "clock_out" && $resolvedIn === null) {
         . "Choose 'Both times' and give the full shift instead.", null, 422);
 }
 if ($resolvedIn !== null && $resolvedOut !== null && strcmp((string) $resolvedOut, (string) $resolvedIn) <= 0) {
-    respond(false, "The corrected time out must be after the time in.", null, 422);
+    // Name both times and say WHERE the clock-out came from. For a clock-in-only
+    // correction the clock-out field is disabled, so the value used is the one
+    // already on file; a bare "time out must be after time in" reads as though the
+    // employee had typed a bad clock-out, which sends them in circles.
+    $outLabel = $requestedOut !== null
+        ? "the corrected clock-out"
+        : "the clock-out already on file";
+    respond(false,
+        "A shift cannot end before it starts. Your clock-in would be "
+        . substr((string) $resolvedIn, 0, 5) . ", but " . $outLabel . " is "
+        . substr((string) $resolvedOut, 0, 5) . ". "
+        . ($requestedOut !== null
+            ? "Make the clock-out later than the clock-in."
+            : "Pick an earlier clock-in, or choose \"Both times\" and give the full shift."),
+        null,
+        422);
 }
 
 // ---- one Pending request per employee + date --------------------------
