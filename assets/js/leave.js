@@ -14,7 +14,8 @@ function countBusinessDays(start, end) {
     let days = 0;
     for (let d = new Date(s); d <= e; d.setDate(d.getDate() + 1)) {
         const dow = d.getDay();
-        if (dow !== 0 && dow !== 6) days++;
+        // Mon-Sat, matching the payroll work week; only Sunday is excluded.
+        if (dow !== 0) days++;
     }
     return days;
 }
@@ -69,15 +70,11 @@ async function loadLeaveTypes() {
             json.data.map((t) => `<option value="${t.leave_type_id}">${escapeHtml(t.name)}</option>`).join("");
         if (cur) select.value = cur;
     } catch (err) {
-        // Fallback: hardcoded common types if cross-folder fetch fails
-        select.innerHTML = `
-            <option value="">-- Select --</option>
-            <option value="1">Vacation Leave</option>
-            <option value="2">Sick Leave</option>
-            <option value="3">Maternity Leave</option>
-            <option value="4">Paternity Leave</option>
-            <option value="5">Birthday Leave</option>
-        `;
+        // No hardcoded fallback on purpose: the leave_type_id values in an
+        // invented list do not match the database, so picking one filed a
+        // request against the wrong type (or a 0-day unpaid one). Fail loudly.
+        select.innerHTML = `<option value="">-- Could not load leave types --</option>`;
+        showToast("Could not load leave types: " + apiErrorMessage(err), "error");
     }
 }
 

@@ -13,7 +13,9 @@ function countBusinessDays(string $start, string $end): int {
     $days = 0;
     while ($cursor < $endEx) {
         $dow = (int) $cursor->format('N');
-        if ($dow <= 5) $days++;
+        // Match the payroll work week (Mon-Sat), not Mon-Fri: otherwise a leave
+        // that spans a Saturday charges one day fewer than payroll counts.
+        if ($dow <= 6) $days++;
         $cursor->modify('+1 day');
     }
     return $days;

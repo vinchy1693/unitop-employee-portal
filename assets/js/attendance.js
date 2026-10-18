@@ -320,10 +320,14 @@ correctionForm.addEventListener("submit", async (e) => {
     }
 });
 
-/** Today is the newest date a correction may target; 90 days back the oldest. */
-function initCorrectionDates() {
+/** Local YYYY-MM-DD (never toISOString: that is UTC and shifts the date). */
+function ymd(d) {
     const pad = (n) => String(n).padStart(2, "0");
-    const ymd = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+/** The correction date window: a year either side. */
+function initCorrectionDates() {
 
     const today = new Date();
     correctionDateEl.max = ymd(new Date(today.getTime() + 365 * 24 * 60 * 60 * 1000));
