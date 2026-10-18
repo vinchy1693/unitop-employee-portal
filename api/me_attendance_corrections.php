@@ -33,7 +33,7 @@ $empId = (int) $user["employee_id"];
 $method = $_SERVER["REQUEST_METHOD"];
 
 const CORRECTION_TYPES   = ["clock_in", "clock_out", "both"];
-const CORRECTION_MAX_AGE = 90;    // days back a correction may reach
+const CORRECTION_MAX_AGE = 365;   // days back a correction may reach
 const CORRECTION_MIN_REASON = 10; // characters
 
 function correction_strlen(string $value): int {
@@ -156,9 +156,13 @@ $reqOut   = normalize_time($in["requested_time_out"] ?? null);
 if ($workDate === "" || !valid_date($workDate)) {
     respond(false, "A valid work date (YYYY-MM-DD) is required.", null, 422);
 }
-$today = date("Y-m-d");
-if ($workDate > $today) {
-    respond(false, "You cannot file a correction for a future date.", null, 422);
+// Testing window: a correction may be dated up to a year back and a year ahead.
+// Production should clamp the future side to today - the rule lives here, and the
+// portal mirrors it with the date picker bounds in assets/js/attendance.js.
+$today    = date("Y-m-d");
+$maxAhead = date("Y-m-d", strtotime("+" . CORRECTION_MAX_AGE . " days"));
+if ($workDate > $maxAhead) {
+    respond(false, "A correction cannot be dated more than " . CORRECTION_MAX_AGE . " days ahead.", null, 422);
 }
 $earliest = date("Y-m-d", strtotime("-" . CORRECTION_MAX_AGE . " days"));
 if ($workDate < $earliest) {

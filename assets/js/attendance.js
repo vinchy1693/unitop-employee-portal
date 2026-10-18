@@ -312,7 +312,7 @@ correctionForm.addEventListener("submit", async (e) => {
         const { data } = await api.post("me_attendance_corrections.php", payload);
         showToast(data.message, "success");
         correctionForm.reset();
-        if (correctionDateEl.max) correctionDateEl.value = correctionDateEl.max;
+        correctionDateEl.value = ymd(new Date());
         syncCorrectionInputs();
         await loadCorrections();
     } catch (err) {
@@ -326,8 +326,8 @@ function initCorrectionDates() {
     const ymd = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
     const today = new Date();
-    correctionDateEl.max = ymd(today);
-    correctionDateEl.min = ymd(new Date(today.getTime() - 90 * 24 * 60 * 60 * 1000));
+    correctionDateEl.max = ymd(new Date(today.getTime() + 365 * 24 * 60 * 60 * 1000));
+    correctionDateEl.min = ymd(new Date(today.getTime() - 365 * 24 * 60 * 60 * 1000));
     if (!correctionDateEl.value) correctionDateEl.value = ymd(today);
     syncCorrectionInputs();
 }
