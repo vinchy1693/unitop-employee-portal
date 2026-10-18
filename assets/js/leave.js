@@ -9,6 +9,7 @@ const balancesGrid = document.getElementById("balances-grid");
 
 function countBusinessDays(start, end) {
     if (!start || !end || start > end) return 0;
+    if (start === end) return 1;   // a single-day request always counts as one day
     const s = new Date(start), e = new Date(end);
     let days = 0;
     for (let d = new Date(s); d <= e; d.setDate(d.getDate() + 1)) {

@@ -46,7 +46,11 @@ if ($method === "POST") {
     if ($start > $end) {
         respond(false, "End date must be on or after start date.", null, 422);
     }
-    if (countBusinessDays($start, $end) === 0) {
+    // A single-day request is always allowed, even when that day is not a
+    // working day: Birthday Leave is one day, and a birthday that falls on a
+    // Saturday or Sunday could otherwise never be filed. Multi-day ranges still
+    // need at least one working day.
+    if ($start !== $end && countBusinessDays($start, $end) === 0) {
         respond(false, "The selected range has no working days.", null, 422);
     }
 
