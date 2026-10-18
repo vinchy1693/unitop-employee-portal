@@ -61,7 +61,7 @@ async function loadLeaveTypes() {
     try {
         // Reuse the admin endpoint - it's public to logged-in users
         // Since we're in a different folder, hit it via a relative path to the admin site
-        const res = await fetch("../master_file_module_api/api/leave_types.php");
+        const res = await fetch("api/me_leave_types.php");
         const json = await res.json();
         if (!json.success) throw new Error(json.message);
 
