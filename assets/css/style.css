@@ -1242,10 +1242,21 @@ html[data-theme="dark"] .payslip-doc > div[style*="#0038A8"] > span:first-child 
 }
 
 /* =====================================================================
+   RESPONSIVE — Narrow tablet (<= 1000px): the six nav tabs (Dashboard
+   through My Profile) no longer fit beside the brand on one line. Let the
+   bar wrap instead of overflowing; the <= 760px block below turns the same
+   markup into a tidy grid.
+   ===================================================================== */
+@media (max-width: 1000px) {
+    .employee-nav { flex-wrap: wrap; row-gap: 8px; padding: 8px 16px; }
+    .nav-links { flex-wrap: wrap; justify-content: flex-end; }
+}
+
+/* =====================================================================
    RESPONSIVE — Mobile (≤ 760px): nav becomes three tidy rows
-   Row 1 brand + floating-in-place theme toggle · Row 2 four equal tabs ·
-   Row 3 account + logout. The nav stops sticking here: at this height it
-   would otherwise eat a fifth of a phone viewport.
+   Row 1 brand + floating-in-place theme toggle · Row 2 the six tabs in
+   two rows of three · Row 3 account + logout. The nav stops sticking
+   here: at this height it would otherwise eat a fifth of a phone viewport.
    ===================================================================== */
 @media (max-width: 760px) {
     .employee-nav {
@@ -1284,7 +1295,7 @@ html[data-theme="dark"] .payslip-doc > div[style*="#0038A8"] > span:first-child 
         width: 100%;
         margin-left: 0;
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 6px;
     }
     .nav-links a {

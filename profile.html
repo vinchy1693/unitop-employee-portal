@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>(function(){try{var t=localStorage.getItem('unitop-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0038A8">
+<title>My Profile - UNITOP Employee Portal</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<nav class="employee-nav">
+    <span class="brand">UNITOP <small>Employee Portal</small></span>
+    <div class="nav-links">
+        <a href="index.html" data-page="index.html">Dashboard</a>
+        <a href="payslips.html" data-page="payslips.html">My Payslips</a>
+        <a href="attendance.html" data-page="attendance.html">My Attendance</a>
+        <a href="leave.html" data-page="leave.html">My Leave</a>
+        <a href="loans.html" data-page="loans.html">My Loans</a>
+        <a href="profile.html" data-page="profile.html" aria-current="page">My Profile</a>
+        <button type="button" class="theme-toggle" data-theme-toggle>Dark</button>
+    </div>
+</nav>
+
+<main class="container">
+
+    <header class="page-head">
+        <div class="page-head-main">
+            <p class="eyebrow">Profile</p>
+            <h1>My Profile</h1>
+            <p class="subtitle">Keep your contact details current so HR can reach you. Pay, position and government numbers are set by HR.</p>
+        </div>
+    </header>
+
+    <div id="msg" class="msg hidden"></div>
+
+    <div class="card">
+        <div class="card-head">
+            <div>
+                <h2 class="card-title">Contact details</h2>
+                <p class="card-sub">These five fields are yours to edit. Leave a field blank to clear it, then press Save.</p>
+            </div>
+        </div>
+
+        <form id="profile-form" novalidate>
+            <div class="form-grid">
+                <div class="field">
+                    <label class="field-label" for="mobile_number">Mobile number</label>
+                    <input type="text" id="mobile_number" maxlength="30" inputmode="tel" autocomplete="tel" placeholder="e.g. 0917 123 4567">
+                </div>
+                <div class="field">
+                    <label class="field-label" for="email">Email</label>
+                    <input type="email" id="email" maxlength="150" autocomplete="email" placeholder="e.g. name@example.com">
+                </div>
+                <div class="field">
+                    <label class="field-label" for="address">Address</label>
+                    <input type="text" id="address" maxlength="255" autocomplete="street-address" placeholder="House, street, city">
+                </div>
+                <div class="field">
+                    <label class="field-label" for="emergency_contact_name">Emergency contact name</label>
+                    <input type="text" id="emergency_contact_name" maxlength="120" placeholder="Full name">
+                </div>
+                <div class="field">
+                    <label class="field-label" for="emergency_contact_number">Emergency contact number</label>
+                    <input type="text" id="emergency_contact_number" maxlength="30" inputmode="tel" autocomplete="tel" placeholder="e.g. 0917 123 4567">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit" id="save-btn">Save changes</button>
+                <p class="form-note">Only these contact fields can be changed here. Every change is written to the audit trail.</p>
+            </div>
+        </form>
+    </div>
+
+    <div class="card">
+        <div class="card-head">
+            <div>
+                <h2 class="card-title">Employment and government details</h2>
+                <p class="card-sub">Read-only. Your pay, position, employment status and government numbers are controlled by HR. Contact HR if any of them needs correcting.</p>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Field</th>
+                        <th scope="col">Value</th>
+                    </tr>
+                </thead>
+                <tbody id="details-rows">
+                    <tr class="loading-row"><td colspan="2">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</main>
+
+<script src="assets/js/axios.min.js"></script>
+<script src="assets/js/sweetalert2.min.js"></script>
+<script src="assets/js/dialogs.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/profile.js"></script>
+<script src="assets/js/theme.js"></script>
+</body>
+</html>

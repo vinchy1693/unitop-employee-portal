@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>(function(){try{var t=localStorage.getItem('unitop-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0038A8">
+<title>My Loans - UNITOP Employee Portal</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<nav class="employee-nav">
+    <span class="brand">UNITOP <small>Employee Portal</small></span>
+    <div class="nav-links">
+        <a href="index.html" data-page="index.html">Dashboard</a>
+        <a href="payslips.html" data-page="payslips.html">My Payslips</a>
+        <a href="attendance.html" data-page="attendance.html">My Attendance</a>
+        <a href="leave.html" data-page="leave.html">My Leave</a>
+        <a href="loans.html" data-page="loans.html" aria-current="page">My Loans</a>
+        <a href="profile.html" data-page="profile.html">My Profile</a>
+        <button type="button" class="theme-toggle" data-theme-toggle>Dark</button>
+    </div>
+</nav>
+
+<main class="container">
+
+    <header class="page-head">
+        <div class="page-head-main">
+            <p class="eyebrow">Loans</p>
+            <h1>My Loans</h1>
+            <p class="subtitle">What you still owe, what each loan costs per month, and every payment on record.</p>
+        </div>
+    </header>
+
+    <div id="msg" class="msg hidden"></div>
+
+    <div id="kpi-grid" class="kpi-grid">
+        <div class="kpi-tile"><div class="kpi-label">Loading...</div></div>
+    </div>
+
+    <div class="card">
+        <div class="card-head">
+            <div>
+                <h2 class="card-title">Loan accounts</h2>
+                <p class="card-sub">Balances come straight from payroll's loan records. Contact HR if a loan is missing.</p>
+            </div>
+            <div class="card-head-side">
+                <span class="count-pill" id="record-count">0 record(s)</span>
+                <span class="scroll-hint" aria-hidden="true">Swipe &gt;</span>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Loan</th>
+                        <th scope="col">Type</th>
+                        <th scope="col" style="text-align:right;">Principal</th>
+                        <th scope="col" style="text-align:right;">Paid so far</th>
+                        <th scope="col" style="text-align:right;">Outstanding</th>
+                        <th scope="col" style="text-align:right;">Monthly</th>
+                        <th scope="col" class="col-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="rows">
+                    <tr class="loading-row"><td colspan="7">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-head">
+            <div>
+                <h2 class="card-title">Payment history</h2>
+                <p class="card-sub">Loan deductions already applied to your payslips.</p>
+            </div>
+            <div class="card-head-side">
+                <span class="count-pill" id="payment-count">0 record(s)</span>
+                <span class="scroll-hint" aria-hidden="true">Swipe &gt;</span>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Loan</th>
+                        <th scope="col" class="col-center">Payslip #</th>
+                        <th scope="col" style="text-align:right;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="payment-rows">
+                    <tr class="loading-row"><td colspan="4">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</main>
+
+<script src="assets/js/axios.min.js"></script>
+<script src="assets/js/sweetalert2.min.js"></script>
+<script src="assets/js/dialogs.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/loans.js"></script>
+<script src="assets/js/theme.js"></script>
+</body>
+</html>
