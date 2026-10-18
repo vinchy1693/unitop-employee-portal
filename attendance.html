@@ -32,6 +32,7 @@
         </div>
         <div class="page-head-actions">
             <a class="btn btn-plain" href="#history">Attendance history</a>
+            <a class="btn btn-plain" href="#corrections">Request a correction</a>
         </div>
     </header>
 
@@ -114,6 +115,72 @@
                 </thead>
                 <tbody id="rows">
                     <tr class="loading-row"><td colspan="6">Loading…</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ================= REQUEST A CORRECTION ================= -->
+    <div class="card" id="corrections">
+        <div class="card-head">
+            <div>
+                <h2 class="card-title">Request a correction</h2>
+                <p class="card-sub">Forgot to scan out, or scanned at the wrong time? File a correction and HR will review it.</p>
+            </div>
+            <div class="card-head-side">
+                <span class="count-pill" id="correction-count">0 record(s)</span>
+                <span class="scroll-hint" aria-hidden="true">Swipe &rarr;</span>
+            </div>
+        </div>
+
+        <form id="correction-form">
+            <div class="form-grid">
+                <div class="field">
+                    <label class="field-label" for="correction_date">Work date</label>
+                    <input type="date" id="correction_date" name="correction_date" required>
+                </div>
+                <div class="field">
+                    <label class="field-label" for="correction_type">What needs fixing?</label>
+                    <select id="correction_type" name="correction_type" required>
+                        <option value="">-- Select --</option>
+                        <option value="clock_in">Clock-in time</option>
+                        <option value="clock_out">Clock-out time</option>
+                        <option value="both">Both times</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label class="field-label" for="requested_time_in">Correct time in</label>
+                    <input type="time" id="requested_time_in" name="requested_time_in">
+                </div>
+                <div class="field">
+                    <label class="field-label" for="requested_time_out">Correct time out</label>
+                    <input type="time" id="requested_time_out" name="requested_time_out">
+                </div>
+            </div>
+            <div class="field" style="margin-bottom:16px;">
+                <label class="field-label" for="correction_reason">Reason</label>
+                <textarea id="correction_reason" name="correction_reason" rows="3" maxlength="500" required placeholder="At least 10 characters, e.g. forgot to scan out after the shift."></textarea>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit">File request</button>
+                <p class="form-note">HR reviews every request. Attendance inside an approved payroll run cannot be corrected.</p>
+            </div>
+        </form>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col" class="col-center">Fix</th>
+                        <th scope="col" class="col-center">Now (in / out)</th>
+                        <th scope="col" class="col-center">Requested (in / out)</th>
+                        <th scope="col" class="col-center">Status</th>
+                        <th scope="col">HR remarks</th>
+                    </tr>
+                </thead>
+                <tbody id="correction-rows">
+                    <tr class="loading-row"><td colspan="6">Loading...</td></tr>
                 </tbody>
             </table>
         </div>
