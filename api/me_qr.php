@@ -31,6 +31,20 @@ if ((int) $employee["is_active"] !== 1) {
     respond(false, "Your employee record is inactive. Please contact HR.", null, 403);
 }
 
+// A revoked QR badge disables QR access for that employee: revoking the last
+// active badge also invalidates the short-lived tokens already issued. When
+// there are no qr_codes rows at all (clean token-only setup), tokens remain
+// available.
+$gate = $pdo->prepare(
+    "SELECT COUNT(*) AS total, COALESCE(SUM(status = 'Active'), 0) AS active
+     FROM qr_codes WHERE employee_id = ?"
+);
+$gate->execute([$empId]);
+$gateRow = $gate->fetch();
+if ((int) $gateRow["total"] > 0 && (int) $gateRow["active"] === 0) {
+    respond(false, "QR access has been revoked. Ask HR to generate a new QR code.", null, 403);
+}
+
 $today = date("Y-m-d");
 $stmt = $pdo->prepare(
     "SELECT time_in, time_out
