@@ -32,6 +32,7 @@
         </div>
         <div class="page-head-actions">
             <a class="btn btn-plain" href="#history">Attendance history</a>
+            <a class="btn btn-plain" href="#overtime">Request overtime</a>
             <a class="btn btn-plain" href="#corrections">Request a correction</a>
         </div>
     </header>
@@ -120,6 +121,62 @@
         </div>
     </div>
 
+    <!-- ================= REQUEST OVERTIME ================= -->
+    <div class="card" id="overtime">
+        <div class="card-head">
+            <div>
+                <h2 class="card-title">Request overtime</h2>
+                <p class="card-sub">File the request before you work. HR approves it, then you clock the actual overtime in and out at the kiosk.</p>
+            </div>
+            <span class="count-pill" id="ot-count">0 record(s)</span>
+        </div>
+
+        <form id="overtime-form">
+            <div class="form-grid">
+                <div class="field">
+                    <label class="field-label" for="ot_date">Overtime date</label>
+                    <input type="date" id="ot_date" name="ot_date" required>
+                </div>
+                <div class="field">
+                    <label class="field-label" for="ot_start">Requested start</label>
+                    <input type="time" id="ot_start" name="ot_start" required>
+                </div>
+                <div class="field">
+                    <label class="field-label" for="ot_end">Requested end</label>
+                    <input type="time" id="ot_end" name="ot_end" required>
+                </div>
+            </div>
+            <div class="field" style="margin-bottom:16px;">
+                <label class="field-label" for="ot_reason">Reason</label>
+                <textarea id="ot_reason" name="ot_reason" rows="3" maxlength="500" required
+                          placeholder="At least 10 characters, e.g. finishing the month-end close."></textarea>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit">File overtime request</button>
+                <p class="form-note">The day type and rate are computed from the date and the holiday calendar. You can clock it in only after HR approves it.</p>
+            </div>
+        </form>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col" class="col-center">Requested</th>
+                        <th scope="col" class="col-center">Day type</th>
+                        <th scope="col" class="col-center">Rate</th>
+                        <th scope="col" style="text-align:right;">Hours</th>
+                        <th scope="col" class="col-center">Status</th>
+                        <th scope="col">Reason</th>
+                    </tr>
+                </thead>
+                <tbody id="ot-rows">
+                    <tr class="loading-row"><td colspan="7">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <!-- ================= REQUEST A CORRECTION ================= -->
     <div class="card" id="corrections">
         <div class="card-head">
@@ -193,7 +250,7 @@
 <script src="assets/js/dialogs.js"></script>
 <script src="assets/js/qrcode.min.js"></script>
 <script src="assets/js/api.js?v=20261018b"></script>
-<script src="assets/js/attendance.js?v=20261018e"></script>
+<script src="assets/js/attendance.js?v=20261019a"></script>
 <script src="assets/js/theme.js"></script>
 </body>
 </html>

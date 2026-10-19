@@ -336,6 +336,117 @@ function initCorrectionDates() {
     syncCorrectionInputs();
 }
 
+// =====================================================================
+// OVERTIME REQUESTS
+//
+// The employee files a request in the portal, HR approves it, and the actual
+// overtime is clocked in/out at the kiosk. The server derives the day type and
+// rate from the date; the client only supplies the window and the reason.
+// =====================================================================
+const otForm    = document.getElementById("overtime-form");
+const otRowsEl  = document.getElementById("ot-rows");
+const otCount   = document.getElementById("ot-count");
+const otDateEl  = document.getElementById("ot_date");
+const otStartEl = document.getElementById("ot_start");
+const otEndEl   = document.getElementById("ot_end");
+const otReasonEl = document.getElementById("ot_reason");
+
+function otBadge(status) {
+    const map = {
+        Pending:   { bg: "#fef3c7", color: "#92400e" },
+        Approved:  { bg: "#e0f2fe", color: "#0369a1" },
+        Rejected:  { bg: "#fde8e8", color: "#b3261e" },
+        Completed: { bg: "#dff5e1", color: "#1e7d32" },
+    };
+    const s = map[status] || { bg: "#e5e7eb", color: "#6b7280" };
+    return `<span class="badge" style="background:${s.bg};color:${s.color};">${escapeHtml(status)}</span>`;
+}
+
+function renderOvertime(rows) {
+    if (otCount) otCount.textContent = `${rows.length} record(s)`;
+
+    if (!rows.length) {
+        otRowsEl.innerHTML = `<tr class="empty-row"><td colspan="7">You haven't filed an overtime request yet.</td></tr>`;
+        return;
+    }
+
+    otRowsEl.innerHTML = rows.map((r) => {
+        const reason = r.reason
+            ? `<span style="color:#6b7280;font-size:12px;">${escapeHtml(r.reason)}</span>`
+            : `<span style="color:#9ca3af;">&mdash;</span>`;
+        const hours = r.hours !== null && r.hours !== undefined
+            ? Number(r.hours).toFixed(2)
+            : "&mdash;";
+        return `
+            <tr>
+                <td>${escapeHtml(r.ot_date)}</td>
+                <td class="col-center">${correctionTime(r.requested_start)} &ndash; ${correctionTime(r.requested_end)}</td>
+                <td class="col-center">${escapeHtml(r.day_type || r.ot_type)}</td>
+                <td class="col-center">${Number(r.rate_multiplier).toFixed(2)}x</td>
+                <td style="text-align:right;">${hours}</td>
+                <td class="col-center">${otBadge(r.status)}</td>
+                <td>${reason}</td>
+            </tr>
+        `;
+    }).join("");
+}
+
+async function loadOvertime() {
+    otRowsEl.innerHTML = `<tr class="loading-row"><td colspan="7">Loading&hellip;</td></tr>`;
+    try {
+        const { data } = await api.get("me_overtime_requests.php");
+        renderOvertime(data.data.rows || []);
+    } catch (err) {
+        otRowsEl.innerHTML = `<tr class="empty-row"><td colspan="7">Failed: ${escapeHtml(apiErrorMessage(err))}</td></tr>`;
+    }
+}
+
+if (otForm) {
+    otForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const otDate = otDateEl.value;
+        const start  = otStartEl.value;
+        const end    = otEndEl.value;
+        const reason = (otReasonEl.value || "").trim();
+
+        if (!otDate || !start || !end) {
+            await alertDialog("Pick the overtime date, start and end.", "warning");
+            return;
+        }
+        if (end <= start) {
+            await alertDialog("The requested end must be after the requested start.", "warning");
+            return;
+        }
+        if (reason.length < 10) {
+            await alertDialog("Please describe the reason in at least 10 characters.", "warning");
+            return;
+        }
+
+        if (!await confirmDialog(
+            `File overtime for ${otDate}, ${start} to ${end}? HR must approve it before you can clock it in.`,
+            { title: "Confirm Overtime Request", icon: "question", confirmText: "File Request" }
+        )) return;
+
+        try {
+            const { data } = await api.post("me_overtime_requests.php", {
+                ot_date: otDate,
+                requested_start: start,
+                requested_end: end,
+                reason: reason,
+            });
+            showToast(data.message, "success");
+            otForm.reset();
+            otDateEl.value = ymd(new Date());
+            otStartEl.value = "18:00";
+            otEndEl.value = "20:00";
+            await loadOvertime();
+        } catch (err) {
+            showToast(apiErrorMessage(err), "error");
+        }
+    });
+}
+
 form.addEventListener("submit", (e) => { e.preventDefault(); loadData(); });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -350,4 +461,9 @@ document.addEventListener("DOMContentLoaded", () => {
     loadData();
     initCorrectionDates();
     loadCorrections();
+
+    if (otDateEl) otDateEl.value = ymd(new Date());
+    if (otStartEl) otStartEl.value = "18:00";
+    if (otEndEl) otEndEl.value = "20:00";
+    loadOvertime();
 });
