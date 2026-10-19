@@ -133,6 +133,10 @@
                 <textarea id="ot_reason" name="ot_reason" rows="3" maxlength="500" required
                           placeholder="At least 10 characters, e.g. finishing the month-end close."></textarea>
             </div>
+            <label style="display:flex;align-items:flex-start;gap:8px;margin-bottom:14px;font-size:12px;color:#6b7280;">
+                <input type="checkbox" id="ot_demo_mode" style="margin-top:2px;">
+                <span>Demo mode (testing only): allow a past overtime date/window. Turn this off in production.</span>
+            </label>
             <div class="form-actions" style="margin-bottom:18px;">
                 <button class="btn btn-primary" type="submit">File overtime request</button>
                 <p class="form-note">The day type and rate are computed from the date and the holiday calendar. You can clock it in only after HR approves it, and the kiosk only accepts the OT clock-in/out inside the approved window (5-minute grace).</p>
@@ -233,7 +237,7 @@
 <script src="assets/js/dialogs.js"></script>
 <script src="assets/js/qrcode.min.js"></script>
 <script src="assets/js/api.js?v=20261019logout"></script>
-<script src="assets/js/attendance.js?v=20261019d"></script>
+<script src="assets/js/attendance.js?v=20261019otdemo"></script>
 <script src="assets/js/theme.js"></script>
 </body>
 </html>

@@ -24,6 +24,13 @@ $method = $_SERVER["REQUEST_METHOD"];
 const OT_MAX_REASON = 500;
 const OT_MIN_REASON = 10;
 const OT_MAX_AHEAD_DAYS = 30;
+const OT_MAX_BEHIND_DAYS = 30;
+
+// Training/demo switch. When true, the employee form may send demo_mode=true
+// to file a same-day window that has already passed (or a past date within
+// OT_MAX_BEHIND_DAYS). Set this to false on a production deployment: a real
+// employee must not be able to file retroactive overtime from the portal.
+const ALLOW_DEMO_OT = true;
 
 function ot_strlen(string $value): int {
     return function_exists("mb_strlen") ? mb_strlen($value, "UTF-8") : strlen($value);
@@ -110,15 +117,24 @@ $otDate   = trim((string) ($in["ot_date"] ?? ""));
 $reason   = trim((string) ($in["reason"] ?? ""));
 $reqStart = ot_normalize_time($in["requested_start"] ?? null);
 $reqEnd   = ot_normalize_time($in["requested_end"] ?? null);
+$demoMode = !empty($in["demo_mode"]);
+
+if ($demoMode && !ALLOW_DEMO_OT) {
+    respond(false, "Demo overtime filing is disabled on this deployment.", null, 403);
+}
 
 $today = date("Y-m-d");
 $maxAhead = date("Y-m-d", strtotime("+" . OT_MAX_AHEAD_DAYS . " days"));
+$maxBehind = date("Y-m-d", strtotime("-" . OT_MAX_BEHIND_DAYS . " days"));
 
 $dateCheck = DateTime::createFromFormat("!Y-m-d", $otDate);
 if (!$dateCheck || $dateCheck->format("Y-m-d") !== $otDate) {
     respond(false, "A valid overtime date (YYYY-MM-DD) is required.", null, 422);
 }
-if ($otDate < $today) {
+if ($otDate < $maxBehind) {
+    respond(false, "Overtime can only be demo-filed up to " . OT_MAX_BEHIND_DAYS . " days in the past.", null, 422);
+}
+if ($otDate < $today && !$demoMode) {
     respond(false, "Overtime must be requested for today or a future date.", null, 422);
 }
 if ($otDate > $maxAhead) {
@@ -136,7 +152,7 @@ if ($reqStart === null || $reqEnd === null) {
 if (strcmp($reqEnd, $reqStart) <= 0) {
     respond(false, "The requested end must be after the requested start.", null, 422);
 }
-if ($otDate === $today && strtotime($reqEnd) !== false && strtotime($reqEnd) < time()) {
+if (!$demoMode && $otDate === $today && strtotime($reqEnd) !== false && strtotime($reqEnd) < time()) {
     respond(false, "That overtime window has already passed. Pick a later window, or ask HR to file it.", null, 422);
 }
 
@@ -168,7 +184,9 @@ $stmt->execute([
 ]);
 $otId = (int) $pdo->lastInsertId();
 
-$message = "Overtime request filed. HR will review it.";
+$message = $demoMode
+    ? "Overtime request filed in demo mode. HR will review it."
+    : "Overtime request filed. HR will review it.";
 
 // The portal has no central audit hook, so this endpoint writes its own row,
 // like me_attendance_corrections.php does.
@@ -182,6 +200,7 @@ try {
         "rate_multiplier" => $day["multiplier"],
         "reason"          => $reason,
         "status"          => "Pending",
+        "demo_mode"       => $demoMode,
     ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
 
     $audit = $pdo->prepare(
@@ -215,4 +234,5 @@ respond(true, $message, [
     "requested_end"   => $reqEnd,
     "day_type"        => $day["type"],
     "rate_multiplier" => $day["multiplier"],
+    "demo_mode"       => $demoMode,
 ]);

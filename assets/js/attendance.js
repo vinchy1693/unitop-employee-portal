@@ -327,6 +327,7 @@ const otDateEl  = document.getElementById("ot_date");
 const otStartEl = document.getElementById("ot_start");
 const otEndEl   = document.getElementById("ot_end");
 const otReasonEl = document.getElementById("ot_reason");
+const otDemoEl  = document.getElementById("ot_demo_mode");
 
 function otBadge(status) {
     const map = {
@@ -415,9 +416,11 @@ if (otForm) {
                 requested_start: start,
                 requested_end: end,
                 reason: reason,
+                demo_mode: !!(otDemoEl && otDemoEl.checked),
             });
             showToast(data.message, "success");
             otForm.reset();
+            if (otDemoEl) otDemoEl.checked = false;
             otDateEl.value = ymd(new Date());
             otStartEl.value = "18:00";
             otEndEl.value = "20:00";
