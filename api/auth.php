@@ -5,6 +5,23 @@ require __DIR__ . "/_bootstrap.php";
 $method = $_SERVER["REQUEST_METHOD"];
 $action = $_GET["action"] ?? "";
 
+// ---- GET ?action=logout ----
+// Plain-link fallback for the sidebar. Destroy the session and go to login;
+// this does not depend on a dialog, axios, or the CSRF bootstrap.
+if ($method === "GET" && $action === "logout") {
+    portal_csrf_clear();
+    $_SESSION = [];
+    if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), "", time() - 42000,
+            $params["path"], $params["domain"],
+            $params["secure"], $params["httponly"]);
+    }
+    session_destroy();
+    header("Location: ../login.html");
+    exit;
+}
+
 // ---- POST ?action=login ----
 if ($method === "POST" && $action === "login") {
     $in       = json_input();
