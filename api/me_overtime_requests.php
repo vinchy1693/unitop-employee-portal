@@ -136,6 +136,9 @@ if ($reqStart === null || $reqEnd === null) {
 if (strcmp($reqEnd, $reqStart) <= 0) {
     respond(false, "The requested end must be after the requested start.", null, 422);
 }
+if ($otDate === $today && strtotime($reqEnd) !== false && strtotime($reqEnd) < time()) {
+    respond(false, "That overtime window has already passed. Pick a later window, or ask HR to file it.", null, 422);
+}
 
 // One open request per employee per date, matching the admin rule.
 $stmt = $pdo->prepare(
