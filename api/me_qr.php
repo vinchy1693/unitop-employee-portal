@@ -62,9 +62,17 @@ if (!$attendance || $attendance["time_in"] === null) {
 } elseif ($attendance["time_out"] === null) {
     $purpose = "time_out";
 } else {
-    // The regular shift is complete. Do not turn the attendance QR into an
-    // overtime QR; OT is filed from the attendance page's overtime form.
-    $purpose = "complete";
+    // The regular shift is complete. The only reason to show another QR is an
+    // Approved overtime record that has not finished yet: the kiosk needs the
+    // QR for OT clock-in and OT clock-out. Pending/Completed OT keeps it hidden.
+    $otStmt = $pdo->prepare(
+        "SELECT ot_id FROM overtime_records
+         WHERE employee_id = ? AND ot_date = ?
+           AND status = 'Approved' AND time_out IS NULL
+         ORDER BY ot_id DESC LIMIT 1"
+    );
+    $otStmt->execute([$empId, $today]);
+    $purpose = $otStmt->fetchColumn() ? "ot" : "complete";
 }
 
 // Invalidate any unused token for this employee before issuing the next one.
