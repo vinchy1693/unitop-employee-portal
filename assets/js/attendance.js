@@ -17,17 +17,36 @@ function statusBadge(status, late) {
 // =====================================================================
 // QR CODE
 // =====================================================================
+let qrRefreshTimer = null;
+
 async function loadMyQR() {
+    if (qrRefreshTimer) { clearTimeout(qrRefreshTimer); qrRefreshTimer = null; }
     try {
         const { data } = await api.get("me_qr.php");
         const qr = data.data;
 
+        if (!qr.token || qr.purpose === "complete") {
+            qrDisplay.innerHTML = `
+                <div style="text-align:center;padding:30px 20px;color:#6b7280;">
+                    <div style="font-size:42px;margin-bottom:10px;">✓</div>
+                    <div style="font-size:14px;font-weight:600;color:#1a1f2e;margin-bottom:6px;">
+                        Attendance complete for today
+                    </div>
+                    <div style="font-size:12.5px;">
+                        Use the overtime request below if you still need to file OT.
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
         qrDisplay.innerHTML = `
             <div style="text-align:center;">
-                <div id="qr-holder" style="display:inline-block;padding:14px;background:#fff;border:3px solid #0038A8;border-radius:12px;"></div>
+                <div id="qr-holder" style="display:inline-block;padding:14px;background:#fff;border:3px solid #0038A8;border-radius:12px;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;"></div>
                 <div style="margin-top:14px;font-size:13px;color:#6b7280;">
-                    <div style="font-weight:600;color:#1a1f2e;">Issued: ${escapeHtml(qr.issued_date)}</div>
-                    <div style="margin-top:4px;">Show this code at the on-site scanner</div>
+                    <div style="font-weight:600;color:#1a1f2e;">Expires: ${escapeHtml(qr.expires_at)}</div>
+                    <div style="margin-top:4px;">${qr.purpose === "time_in" ? "Clock in" : qr.purpose === "time_out" ? "Clock out" : "Overtime"} · show this at the on-site scanner</div>
+                    <div style="margin-top:4px;font-size:11.5px;">This code refreshes automatically. A screenshot stops working after it expires.</div>
                 </div>
             </div>
         `;
@@ -35,7 +54,7 @@ async function loadMyQR() {
         // Render the QR
         const holder = document.getElementById("qr-holder");
         new QRCode(holder, {
-            text: qr.code_value,
+            text: qr.token,
             width: 240,
             height: 240,
             colorDark: "#0038A8",
@@ -43,17 +62,20 @@ async function loadMyQR() {
             correctLevel: QRCode.CorrectLevel.H,
         });
 
+        // Refresh before the token expires, even while the employee is in line.
+        const refreshIn = Math.max(15, Number(qr.ttl || 120) - 30) * 1000;
+        qrRefreshTimer = setTimeout(loadMyQR, refreshIn);
+
     } catch (err) {
-        // No QR yet, or error
+        const code = err?.response?.status;
+        const msg = apiErrorMessage(err);
         qrDisplay.innerHTML = `
             <div style="text-align:center;padding:30px 20px;color:#6b7280;">
-                <div style="font-size:42px;margin-bottom:10px;">📷</div>
+                <div style="font-size:42px;margin-bottom:10px;">${code === 403 ? "🔒" : "📷"}</div>
                 <div style="font-size:14px;font-weight:600;color:#1a1f2e;margin-bottom:6px;">
-                    No QR code on file
+                    ${code === 403 ? "QR code unavailable" : "No QR code on file"}
                 </div>
-                <div style="font-size:12.5px;">
-                    Please ask HR to generate a QR code for you.
-                </div>
+                <div style="font-size:12.5px;">${escapeHtml(msg)}</div>
             </div>
         `;
     }
