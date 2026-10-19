@@ -16,7 +16,7 @@ if ($method === "GET" && !isset($_GET["id"])) {
          FROM payslips ps
          JOIN payroll_runs pr ON pr.run_id = ps.run_id
          JOIN payroll_periods pp ON pp.period_id = pr.period_id
-         WHERE ps.employee_id = ?
+         WHERE ps.employee_id = ? AND pr.status = 'Released'
          ORDER BY pp.end_date DESC, ps.payslip_id DESC"
     );
     $stmt->execute([$empId]);
@@ -40,7 +40,7 @@ if ($method === "GET" && isset($_GET["id"])) {
          JOIN payroll_runs pr ON pr.run_id = ps.run_id
          JOIN payroll_periods pp ON pp.period_id = pr.period_id
          LEFT JOIN govt_contributions gc ON gc.payslip_id = ps.payslip_id
-         WHERE ps.payslip_id = ? AND ps.employee_id = ?"
+         WHERE ps.payslip_id = ? AND ps.employee_id = ? AND pr.status = 'Released'"
     );
     $stmt->execute([$id, $empId]);
     $row = $stmt->fetch();

@@ -15,7 +15,7 @@ $stmt = $pdo->prepare(
      FROM payslips ps
      JOIN payroll_runs pr ON pr.run_id = ps.run_id
      JOIN payroll_periods pp ON pp.period_id = pr.period_id
-     WHERE ps.employee_id = ?
+     WHERE ps.employee_id = ? AND pr.status = 'Released'
      ORDER BY pp.end_date DESC, ps.payslip_id DESC LIMIT 1"
 );
 $stmt->execute([$empId]);
