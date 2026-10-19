@@ -27,15 +27,10 @@ async function loadMyQR() {
                 <div id="qr-holder" style="display:inline-block;padding:14px;background:#fff;border:3px solid #0038A8;border-radius:12px;"></div>
                 <div style="margin-top:14px;font-size:13px;color:#6b7280;">
                     <div style="font-weight:600;color:#1a1f2e;">Issued: ${escapeHtml(qr.issued_date)}</div>
-                    <div style="margin-top:4px;">Show this code to the office scanner</div>
-                    <div style="margin-top:8px;font-family:monospace;font-size:11.5px;word-break:break-all;">${escapeHtml(qr.code_value)}</div>
+                    <div style="margin-top:4px;">Show this code at the on-site scanner</div>
                 </div>
             </div>
         `;
-
-        // Prefill the manual fallback box with this employee's own code.
-        const manualEl = document.getElementById("manual-code");
-        if (manualEl) manualEl.value = qr.code_value;
 
         // Render the QR
         const holder = document.getElementById("qr-holder");
@@ -126,46 +121,6 @@ function renderRows(rows) {
             <td class="col-center">${statusBadge(r.status, Number(r.minutes_late || 0))}</td>
         </tr>
     `).join("");
-}
-
-// =====================================================================
-// MANUAL FALLBACK — record attendance by submitting the QR value
-// =====================================================================
-const manualBtn    = document.getElementById("manual-submit");
-const manualInput  = document.getElementById("manual-code");
-const manualResult = document.getElementById("manual-result");
-
-function showManualResult(kind, text) {
-    if (!manualResult) return;
-    manualResult.classList.remove("hidden");
-    manualResult.style.display    = "block";
-    manualResult.style.padding    = "10px 12px";
-    manualResult.style.borderRadius = "6px";
-    manualResult.style.fontSize   = "13px";
-    manualResult.style.background = kind === "error" ? "#fde8e8" : "#dff5e1";
-    manualResult.style.color      = kind === "error" ? "#b3261e" : "#1e7d32";
-    manualResult.textContent      = text;
-}
-
-if (manualBtn && manualInput) {
-    const submitManual = async () => {
-        const code = (manualInput.value || "").trim();
-        if (!code) { showManualResult("error", "Enter your QR code value first."); return; }
-        manualBtn.disabled = true;
-        try {
-            const { data } = await api.post("me_scan_attendance.php", { code_value: code });
-            showManualResult("success", data.message || "Attendance recorded.");
-            loadData();
-        } catch (err) {
-            showManualResult("error", apiErrorMessage(err));
-        } finally {
-            manualBtn.disabled = false;
-        }
-    };
-    manualBtn.addEventListener("click", submitManual);
-    manualInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") { e.preventDefault(); submitManual(); }
-    });
 }
 
 // =====================================================================

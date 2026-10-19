@@ -39,12 +39,12 @@
 
     <div id="msg" class="msg hidden"></div>
 
-    <!-- ================= MY QR CODE — the hero of this page ================= -->
+    <!-- ================= MY QR CODE — for the on-site scanner only ================= -->
     <div class="card" id="qr-card">
         <div class="card-head">
             <div>
                 <h2 class="card-title">My QR code</h2>
-                <p class="card-sub">Hold your phone up to the scanner. It clocks you in or out automatically.</p>
+                <p class="card-sub">Show this code at the on-site scanner. Clocking in and out is only available at the office kiosk.</p>
             </div>
         </div>
 
@@ -52,26 +52,8 @@
             <div class="card-sub">Loading your code…</div>
         </div>
 
-        <!-- Fallback when the scanner cannot be used. Deliberately secondary. -->
-        <div class="manual-fallback">
-            <div class="manual-head">
-                <span class="manual-icon" aria-hidden="true">⌨</span>
-                <div>
-                    <h3 class="manual-title">Scanner not working?</h3>
-                    <p class="manual-note">
-                        Your code value is already filled in below. Press
-                        <strong>Record attendance</strong> to clock in or out without the scanner.
-                    </p>
-                </div>
-            </div>
-
-            <label class="field-label" for="manual-code">QR code value</label>
-            <div class="manual-row">
-                <input type="text" id="manual-code" placeholder="UNITOP-…" autocomplete="off"
-                       spellcheck="false" autocapitalize="off">
-                <button class="btn btn-outline" id="manual-submit" type="button">Record attendance</button>
-            </div>
-            <div id="manual-result" class="msg hidden" role="status" aria-live="polite"></div>
+        <div style="margin-top:14px;padding:10px 12px;border-radius:8px;background:#fef3c7;color:#92400e;font-size:12.5px;">
+            <strong>On-site only.</strong> The portal cannot record attendance. Do not share this code — someone else could use it at the kiosk.
         </div>
     </div>
 
@@ -251,7 +233,7 @@
 <script src="assets/js/dialogs.js"></script>
 <script src="assets/js/qrcode.min.js"></script>
 <script src="assets/js/api.js?v=20261019a"></script>
-<script src="assets/js/attendance.js?v=20261019b"></script>
+<script src="assets/js/attendance.js?v=20261019c"></script>
 <script src="assets/js/theme.js"></script>
 </body>
 </html>
