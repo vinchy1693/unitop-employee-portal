@@ -7,6 +7,16 @@
 <meta name="theme-color" content="#0038A8">
 <title>My Attendance — UNITOP Employee Portal</title>
 <link rel="stylesheet" href="assets/css/style.css">
+<style>
+    #qr-display {
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+    }
+    @media print {
+        #qr-display { display: none !important; }
+    }
+</style>
 </head>
 <body>
 <nav class="employee-nav">
@@ -31,7 +41,6 @@
             <p class="subtitle">Show your QR code to the office scanner to clock in or out.</p>
         </div>
         <div class="page-head-actions">
-            <a class="btn btn-plain" href="my_qr.html">My QR</a>
             <a class="btn btn-plain" href="#history">Attendance history</a>
             <a class="btn btn-plain" href="#overtime">Overtime request &amp; history</a>
             <a class="btn btn-plain" href="#corrections">Request a correction</a>
@@ -234,7 +243,7 @@
 <script src="assets/js/dialogs.js"></script>
 <script src="assets/js/qrcode.min.js"></script>
 <script src="assets/js/api.js?v=20261019a"></script>
-<script src="assets/js/attendance.js?v=20261019d"></script>
+<script src="assets/js/attendance.js?v=20261019c"></script>
 <script src="assets/js/theme.js"></script>
 </body>
 </html>
