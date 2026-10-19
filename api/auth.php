@@ -39,6 +39,7 @@ if ($method === "POST" && $action === "login") {
     }
 
     session_regenerate_id(true);
+    portal_csrf_rotate();
 
     $_SESSION["user_id"]     = (int) $user["user_id"];
     $_SESSION["username"]    = $user["username"];
@@ -51,11 +52,13 @@ if ($method === "POST" && $action === "login") {
         "role"          => $user["role"],
         "employee_id"   => (int) $user["employee_id"],
         "employee_name" => $user["employee_name"],
+        "csrf_token"    => $_SESSION["csrf_token"],
     ]);
 }
 
 // ---- POST ?action=logout ----
 if ($method === "POST" && $action === "logout") {
+    portal_csrf_clear();
     $_SESSION = [];
     if (ini_get("session.use_cookies")) {
         $params = session_get_cookie_params();
@@ -93,6 +96,7 @@ if ($method === "GET" && $action === "me") {
         "employee_name"   => trim(($emp["first_name"] ?? "") . " " . ($emp["last_name"] ?? "")),
         "department_name" => $emp["department_name"] ?? "",
         "position_title"  => $emp["position_title"] ?? "",
+        "csrf_token"      => portal_csrf_token(),
     ]);
 }
 

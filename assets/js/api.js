@@ -7,6 +7,22 @@ const api = axios.create({
     headers: { "Content-Type": "application/json" },
 });
 
+// CSRF: echo the readable portal_csrf cookie in X-CSRF-Token on every request.
+function readCookie(name) {
+    const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const match = document.cookie.match(new RegExp("(?:^|; )" + escaped + "=([^;]*)"));
+    return match ? decodeURIComponent(match[1]) : "";
+}
+
+api.interceptors.request.use((config) => {
+    const token = readCookie("portal_csrf");
+    if (token) {
+        config.headers = config.headers || {};
+        config.headers["X-CSRF-Token"] = token;
+    }
+    return config;
+});
+
 api.interceptors.response.use(
     (response) => response,
     (error) => {
