@@ -32,7 +32,7 @@
         </div>
         <div class="page-head-actions">
             <a class="btn btn-plain" href="#history">Attendance history</a>
-            <a class="btn btn-plain" href="#overtime">Request overtime</a>
+            <a class="btn btn-plain" href="#overtime">Overtime request &amp; history</a>
             <a class="btn btn-plain" href="#corrections">Request a correction</a>
         </div>
     </header>
@@ -125,8 +125,8 @@
     <div class="card" id="overtime">
         <div class="card-head">
             <div>
-                <h2 class="card-title">Request overtime</h2>
-                <p class="card-sub">File the request before you work. HR approves it, then you clock the actual overtime in and out at the kiosk.</p>
+                <h2 class="card-title">Overtime request &amp; history</h2>
+                <p class="card-sub">File the request before you work. HR approves it, then you clock the actual overtime in and out at the kiosk. Your request history and actual clocked hours appear below.</p>
             </div>
             <span class="count-pill" id="ot-count">0 record(s)</span>
         </div>
@@ -151,7 +151,7 @@
                 <textarea id="ot_reason" name="ot_reason" rows="3" maxlength="500" required
                           placeholder="At least 10 characters, e.g. finishing the month-end close."></textarea>
             </div>
-            <div class="form-actions">
+            <div class="form-actions" style="margin-bottom:18px;">
                 <button class="btn btn-primary" type="submit">File overtime request</button>
                 <p class="form-note">The day type and rate are computed from the date and the holiday calendar. You can clock it in only after HR approves it.</p>
             </div>
@@ -163,6 +163,7 @@
                     <tr>
                         <th scope="col">Date</th>
                         <th scope="col" class="col-center">Requested</th>
+                        <th scope="col" class="col-center">Actual</th>
                         <th scope="col" class="col-center">Day type</th>
                         <th scope="col" class="col-center">Rate</th>
                         <th scope="col" style="text-align:right;">Hours</th>
@@ -171,7 +172,7 @@
                     </tr>
                 </thead>
                 <tbody id="ot-rows">
-                    <tr class="loading-row"><td colspan="7">Loading...</td></tr>
+                    <tr class="loading-row"><td colspan="8">Loading...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -250,7 +251,7 @@
 <script src="assets/js/dialogs.js"></script>
 <script src="assets/js/qrcode.min.js"></script>
 <script src="assets/js/api.js?v=20261019a"></script>
-<script src="assets/js/attendance.js?v=20261019a"></script>
+<script src="assets/js/attendance.js?v=20261019b"></script>
 <script src="assets/js/theme.js"></script>
 </body>
 </html>

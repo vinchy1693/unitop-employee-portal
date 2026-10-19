@@ -366,7 +366,7 @@ function renderOvertime(rows) {
     if (otCount) otCount.textContent = `${rows.length} record(s)`;
 
     if (!rows.length) {
-        otRowsEl.innerHTML = `<tr class="empty-row"><td colspan="7">You haven't filed an overtime request yet.</td></tr>`;
+        otRowsEl.innerHTML = `<tr class="empty-row"><td colspan="8">You haven't filed an overtime request yet.</td></tr>`;
         return;
     }
 
@@ -377,10 +377,14 @@ function renderOvertime(rows) {
         const hours = r.hours !== null && r.hours !== undefined
             ? Number(r.hours).toFixed(2)
             : "&mdash;";
+        const actual = r.time_in
+            ? `${correctionTime(r.time_in)}${r.time_out ? " &ndash; " + correctionTime(r.time_out) : " &ndash; running"}`
+            : "&mdash;";
         return `
             <tr>
                 <td>${escapeHtml(r.ot_date)}</td>
                 <td class="col-center">${correctionTime(r.requested_start)} &ndash; ${correctionTime(r.requested_end)}</td>
+                <td class="col-center">${actual}</td>
                 <td class="col-center">${escapeHtml(r.day_type || r.ot_type)}</td>
                 <td class="col-center">${Number(r.rate_multiplier).toFixed(2)}x</td>
                 <td style="text-align:right;">${hours}</td>
@@ -392,12 +396,12 @@ function renderOvertime(rows) {
 }
 
 async function loadOvertime() {
-    otRowsEl.innerHTML = `<tr class="loading-row"><td colspan="7">Loading&hellip;</td></tr>`;
+    otRowsEl.innerHTML = `<tr class="loading-row"><td colspan="8">Loading&hellip;</td></tr>`;
     try {
         const { data } = await api.get("me_overtime_requests.php");
         renderOvertime(data.data.rows || []);
     } catch (err) {
-        otRowsEl.innerHTML = `<tr class="empty-row"><td colspan="7">Failed: ${escapeHtml(apiErrorMessage(err))}</td></tr>`;
+        otRowsEl.innerHTML = `<tr class="empty-row"><td colspan="8">Failed: ${escapeHtml(apiErrorMessage(err))}</td></tr>`;
     }
 }
 
