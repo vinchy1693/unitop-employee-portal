@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0038A8">
-<title>My Attendance — UNITOP Employee Portal</title>
+<title>My Attendance â€” UNITOP Employee Portal</title>
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -18,7 +18,7 @@
         <a href="leave.html" data-page="leave.html">My Leave</a>
         <a href="loans.html" data-page="loans.html">My Loans</a>
         <a href="profile.html" data-page="profile.html">My Profile</a>
-        <button type="button" class="theme-toggle" data-theme-toggle>🌙 Dark</button>
+        <button type="button" class="theme-toggle" data-theme-toggle>ðŸŒ™ Dark</button>
     </div>
 </nav>
 
@@ -32,14 +32,14 @@
         </div>
         <div class="page-head-actions">
             <a class="btn btn-plain" href="#history">Attendance history</a>
-            <a class="btn btn-plain" href="#overtime">Overtime request &amp; history</a>
+            <a class="btn btn-plain" href="#overtime">Overtime history</a>
             <a class="btn btn-plain" href="#corrections">Request a correction</a>
         </div>
     </header>
 
     <div id="msg" class="msg hidden"></div>
 
-    <!-- ================= MY QR CODE — for the on-site scanner only ================= -->
+    <!-- ================= MY QR CODE â€” for the on-site scanner only ================= -->
     <div class="card" id="qr-card">
         <div class="card-head">
             <div>
@@ -49,11 +49,11 @@
         </div>
 
         <div id="qr-display">
-            <div class="card-sub">Loading your code…</div>
+            <div class="card-sub">Loading your codeâ€¦</div>
         </div>
 
         <div style="margin-top:14px;padding:10px 12px;border-radius:8px;background:#fef3c7;color:#92400e;font-size:12.5px;">
-            <strong>On-site only.</strong> The portal cannot record attendance. Do not share this code — someone else could use it at the kiosk.
+            <strong>On-site only.</strong> The portal cannot record attendance. Do not share this code â€” someone else could use it at the kiosk.
         </div>
 
         <div style="margin-top:14px;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;background:#f8fafc;font-size:12px;color:#475569;">
@@ -69,7 +69,7 @@
 
     <!-- ================= THIS MONTH AT A GLANCE ================= -->
     <div id="kpi-grid" class="kpi-grid">
-        <div class="kpi-tile"><div class="kpi-label">Loading…</div></div>
+        <div class="kpi-tile"><div class="kpi-label">Loadingâ€¦</div></div>
     </div>
 
     <!-- ================= ATTENDANCE HISTORY ================= -->
@@ -79,7 +79,7 @@
                 <h2 class="card-title">Attendance history</h2>
                 <p class="card-sub">Pick a date range, then apply.</p>
             </div>
-            <span class="scroll-hint" aria-hidden="true">Swipe →</span>
+            <span class="scroll-hint" aria-hidden="true">Swipe â†’</span>
         </div>
 
         <form id="filter-form" class="filter-form">
@@ -107,51 +107,25 @@
                     </tr>
                 </thead>
                 <tbody id="rows">
-                    <tr class="loading-row"><td colspan="6">Loading…</td></tr>
+                    <tr class="loading-row"><td colspan="6">Loadingâ€¦</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- ================= REQUEST OVERTIME ================= -->
+    <!-- ================= OVERTIME HISTORY ================= -->
     <div class="card" id="overtime">
         <div class="card-head">
             <div>
-                <h2 class="card-title">Overtime request &amp; history</h2>
-                <p class="card-sub">File the request before you work. HR approves it, then you clock the actual overtime in and out at the kiosk. Your request history and actual clocked hours appear below.</p>
+                <h2 class="card-title">Overtime history</h2>
+                <p class="card-sub">Your supervisor files overtime requests for you. The Approver reviews them; after approval, you clock the actual overtime in and out at the kiosk. Your request history and actual clocked hours appear below.</p>
             </div>
             <span class="count-pill" id="ot-count">0 record(s)</span>
         </div>
 
-        <form id="overtime-form">
-            <div class="form-grid">
-                <div class="field">
-                    <label class="field-label" for="ot_date">Overtime date</label>
-                    <input type="date" id="ot_date" name="ot_date" required>
-                </div>
-                <div class="field">
-                    <label class="field-label" for="ot_start">Requested start</label>
-                    <input type="time" id="ot_start" name="ot_start" required>
-                </div>
-                <div class="field">
-                    <label class="field-label" for="ot_end">Requested end</label>
-                    <input type="time" id="ot_end" name="ot_end" required>
-                </div>
-            </div>
-            <div class="field" style="margin-bottom:16px;">
-                <label class="field-label" for="ot_reason">Reason</label>
-                <textarea id="ot_reason" name="ot_reason" rows="3" maxlength="500" required
-                          placeholder="At least 10 characters, e.g. finishing the month-end close."></textarea>
-            </div>
-            <label style="display:flex;align-items:flex-start;gap:8px;margin-bottom:14px;font-size:12px;color:#6b7280;">
-                <input type="checkbox" id="ot_demo_mode" style="margin-top:2px;">
-                <span>Demo mode (testing only): allow a past overtime date/window. Turn this off in production.</span>
-            </label>
-            <div class="form-actions" style="margin-bottom:18px;">
-                <button class="btn btn-primary" type="submit">File overtime request</button>
-                <p class="form-note">The day type and rate are computed from the date and the holiday calendar. You can clock it in only after HR approves it, and the kiosk only accepts the OT clock-in/out inside the approved window (5-minute grace).</p>
-            </div>
-        </form>
+        <div style="margin-bottom:14px;padding:10px 12px;border-radius:8px;background:#eef4ff;color:#1e3a8a;font-size:12.5px;">
+            <strong>Supervisor-filed.</strong> Employees cannot file overtime in the portal. Ask your supervisor to file an overtime request for your date and window.
+        </div>
 
         <div class="table-wrap">
             <table>
@@ -247,7 +221,7 @@
 <script src="assets/js/dialogs.js"></script>
 <script src="assets/js/qrcode.min.js"></script>
 <script src="assets/js/api.js?v=20261019logout"></script>
-<script src="assets/js/attendance.js?v=20261020qrdemo"></script>
+<script src="assets/js/attendance.js?v=20261020supervisorot2"></script>
 <script src="assets/js/theme.js"></script>
 </body>
 </html>

@@ -71,7 +71,7 @@ async function loadMyQR() {
                         Attendance complete for today
                     </div>
                     <div style="font-size:12.5px;">
-                        Use the overtime request below if you still need to file OT.
+                        Ask your supervisor to file an overtime request if you still need OT.
                     </div>
                 </div>
             `;
@@ -352,20 +352,14 @@ function initCorrectionDates() {
 }
 
 // =====================================================================
-// OVERTIME REQUESTS
+// OVERTIME HISTORY (READ-ONLY)
 //
-// The employee files a request in the portal, HR approves it, and the actual
-// overtime is clocked in/out at the kiosk. The server derives the day type and
-// rate from the date; the client only supplies the window and the reason.
+// Only a Supervisor files overtime requests, from the admin Overtime page.
+// The employee can see the resulting request/history here and clocks the
+// actual overtime in/out at the kiosk after approval.
 // =====================================================================
-const otForm    = document.getElementById("overtime-form");
 const otRowsEl  = document.getElementById("ot-rows");
 const otCount   = document.getElementById("ot-count");
-const otDateEl  = document.getElementById("ot_date");
-const otStartEl = document.getElementById("ot_start");
-const otEndEl   = document.getElementById("ot_end");
-const otReasonEl = document.getElementById("ot_reason");
-const otDemoEl  = document.getElementById("ot_demo_mode");
 
 function otBadge(status) {
     const map = {
@@ -382,7 +376,7 @@ function renderOvertime(rows) {
     if (otCount) otCount.textContent = `${rows.length} record(s)`;
 
     if (!rows.length) {
-        otRowsEl.innerHTML = `<tr class="empty-row"><td colspan="8">You haven't filed an overtime request yet.</td></tr>`;
+        otRowsEl.innerHTML = `<tr class="empty-row"><td colspan="8">No overtime request has been filed for you yet. Ask your supervisor.</td></tr>`;
         return;
     }
 
@@ -421,54 +415,6 @@ async function loadOvertime() {
     }
 }
 
-if (otForm) {
-    otForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const otDate = otDateEl.value;
-        const start  = otStartEl.value;
-        const end    = otEndEl.value;
-        const reason = (otReasonEl.value || "").trim();
-
-        if (!otDate || !start || !end) {
-            await alertDialog("Pick the overtime date, start and end.", "warning");
-            return;
-        }
-        if (end <= start) {
-            await alertDialog("The requested end must be after the requested start.", "warning");
-            return;
-        }
-        if (reason.length < 10) {
-            await alertDialog("Please describe the reason in at least 10 characters.", "warning");
-            return;
-        }
-
-        if (!await confirmDialog(
-            `File overtime for ${otDate}, ${start} to ${end}? HR must approve it before you can clock it in.`,
-            { title: "Confirm Overtime Request", icon: "question", confirmText: "File Request" }
-        )) return;
-
-        try {
-            const { data } = await api.post("me_overtime_requests.php", {
-                ot_date: otDate,
-                requested_start: start,
-                requested_end: end,
-                reason: reason,
-                demo_mode: !!(otDemoEl && otDemoEl.checked),
-            });
-            showToast(data.message, "success");
-            otForm.reset();
-            if (otDemoEl) otDemoEl.checked = false;
-            otDateEl.value = ymd(new Date());
-            otStartEl.value = "18:00";
-            otEndEl.value = "20:00";
-            await loadOvertime();
-        } catch (err) {
-            showToast(apiErrorMessage(err), "error");
-        }
-    });
-}
-
 form.addEventListener("submit", (e) => { e.preventDefault(); loadData(); });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -484,9 +430,5 @@ document.addEventListener("DOMContentLoaded", () => {
     loadData();
     initCorrectionDates();
     loadCorrections();
-
-    if (otDateEl) otDateEl.value = ymd(new Date());
-    if (otStartEl) otStartEl.value = "18:00";
-    if (otEndEl) otEndEl.value = "20:00";
     loadOvertime();
 });
