@@ -6,6 +6,43 @@ const form        = document.getElementById("filter-form");
 const kpiGrid     = document.getElementById("kpi-grid");
 const rowsEl      = document.getElementById("rows");
 const qrDisplay   = document.getElementById("qr-display");
+const qrDemoDateEl = document.getElementById("qr_demo_date");
+const qrDemoClear  = document.getElementById("qr_demo_clear");
+const qrDemoNote   = document.getElementById("qr_demo_note");
+const QR_DEMO_KEY  = "unitop_qr_demo_date";
+
+function getQrDemoDate() {
+    const value = localStorage.getItem(QR_DEMO_KEY) || "";
+    return /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : "";
+}
+
+function updateQrDemoNote() {
+    if (!qrDemoNote) return;
+    const value = getQrDemoDate();
+    qrDemoNote.textContent = value ? `Using demo date: ${value}` : "Using today's date";
+}
+
+function initQrDemoDate() {
+    if (!qrDemoDateEl) return;
+    qrDemoDateEl.value = getQrDemoDate();
+    updateQrDemoNote();
+
+    qrDemoDateEl.addEventListener("change", () => {
+        if (qrDemoDateEl.value) localStorage.setItem(QR_DEMO_KEY, qrDemoDateEl.value);
+        else localStorage.removeItem(QR_DEMO_KEY);
+        updateQrDemoNote();
+        loadMyQR();
+    });
+
+    if (qrDemoClear) {
+        qrDemoClear.addEventListener("click", () => {
+            localStorage.removeItem(QR_DEMO_KEY);
+            qrDemoDateEl.value = "";
+            updateQrDemoNote();
+            loadMyQR();
+        });
+    }
+}
 
 function statusBadge(status, late) {
     if (status === "Clocked In") return `<span class="badge" style="background:#e0f2fe;color:#0369a1;">Clocked In</span>`;
@@ -22,7 +59,8 @@ let qrRefreshTimer = null;
 async function loadMyQR() {
     if (qrRefreshTimer) { clearTimeout(qrRefreshTimer); qrRefreshTimer = null; }
     try {
-        const { data } = await api.get("me_qr.php");
+        const demoDate = getQrDemoDate();
+        const { data } = await api.get("me_qr.php", demoDate ? { params: { demo_date: demoDate } } : undefined);
         const qr = data.data;
 
         if (!qr.token || qr.purpose === "complete") {
@@ -441,6 +479,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const last = new Date(y, now.getMonth() + 1, 0).getDate();
     document.getElementById("to_date").value = `${y}-${m}-${String(last).padStart(2, "0")}`;
 
+    initQrDemoDate();
     loadMyQR();
     loadData();
     initCorrectionDates();

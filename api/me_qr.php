@@ -20,6 +20,22 @@ if ($_SERVER["REQUEST_METHOD"] !== "GET") {
 
 const PORTAL_QR_TOKEN_TTL_SECONDS = 120;
 
+// Training-only: lets the portal use the same simulated date as kiosk Demo
+// Mode, so a Sunday clock-in can be followed by the expected Clock out QR.
+// Set this to false in production.
+const ALLOW_DEMO_QR_DATE = true;
+$demoDate = trim((string) ($_GET["demo_date"] ?? ""));
+
+if ($demoDate !== "") {
+    if (!ALLOW_DEMO_QR_DATE) {
+        respond(false, "QR demo dates are disabled on this deployment.", null, 403);
+    }
+    $parsed = DateTime::createFromFormat("!Y-m-d", $demoDate);
+    if (!$parsed || $parsed->format("Y-m-d") !== $demoDate) {
+        respond(false, "demo_date must be a real date in YYYY-MM-DD form.", null, 422);
+    }
+}
+
 // A deactivated employee must not receive a new token, even with a live session.
 $empStmt = $pdo->prepare("SELECT employee_number, is_active FROM employees WHERE employee_id = ?");
 $empStmt->execute([$empId]);
@@ -46,7 +62,7 @@ if ((int) $gateRow["active"] === 0) {
     respond(false, "No active QR code is on file. Ask HR to generate one.", null, 404);
 }
 
-$today = date("Y-m-d");
+$today = $demoDate !== "" ? $demoDate : date("Y-m-d");
 $stmt = $pdo->prepare(
     "SELECT time_in, time_out
      FROM attendance

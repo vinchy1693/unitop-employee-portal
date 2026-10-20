@@ -55,6 +55,16 @@
         <div style="margin-top:14px;padding:10px 12px;border-radius:8px;background:#fef3c7;color:#92400e;font-size:12.5px;">
             <strong>On-site only.</strong> The portal cannot record attendance. Do not share this code — someone else could use it at the kiosk.
         </div>
+
+        <div style="margin-top:14px;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;background:#f8fafc;font-size:12px;color:#475569;">
+            <label for="qr_demo_date" style="font-weight:700;color:#1a1f2e;">Demo date (testing only)</label>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px;">
+                <input type="date" id="qr_demo_date" style="padding:6px 8px;border:1px solid #cbd5e1;border-radius:6px;">
+                <button type="button" class="btn btn-plain" id="qr_demo_clear" style="padding:6px 10px;font-size:12px;">Use today</button>
+                <span id="qr_demo_note" style="color:#6b7280;"></span>
+            </div>
+            <div style="margin-top:5px;color:#6b7280;">Use the same date as kiosk Demo Mode. Production disables this server-side.</div>
+        </div>
     </div>
 
     <!-- ================= THIS MONTH AT A GLANCE ================= -->
@@ -237,7 +247,7 @@
 <script src="assets/js/dialogs.js"></script>
 <script src="assets/js/qrcode.min.js"></script>
 <script src="assets/js/api.js?v=20261019logout"></script>
-<script src="assets/js/attendance.js?v=20261019otdemo"></script>
+<script src="assets/js/attendance.js?v=20261020qrdemo"></script>
 <script src="assets/js/theme.js"></script>
 </body>
 </html>
