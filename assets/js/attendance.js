@@ -255,7 +255,7 @@ function renderCorrections(rows) {
             : "";
         const remarks = r.review_remarks
             ? escapeHtml(r.review_remarks)
-            : `<span style="color:#9ca3af;">&mdash;</span>`;
+            : `<span style="color:#9ca3af;">No remarks</span>`;
 
         return `
             <tr>
