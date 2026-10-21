@@ -7,6 +7,9 @@ const countEl     = document.getElementById("record-count");
 const kpiGrid     = document.getElementById("kpi-grid");
 const payRowsEl   = document.getElementById("payment-rows");
 const payCountEl  = document.getElementById("payment-count");
+const requestForm = document.getElementById("loan-request-form");
+const requestMsg  = document.getElementById("loan-request-msg");
+const requestBtn  = document.getElementById("request-loan-btn");
 
 function formatMoney(n) {
     return "PHP " + Number(n || 0).toLocaleString("en-PH", {
@@ -18,6 +21,7 @@ function formatMoney(n) {
 function statusBadge(status) {
     const map = {
         "Active":    { bg: "#dff5e1", color: "#1e7d32" },
+        "Pending":   { bg: "#fef3c7", color: "#92400e" },
         "Ongoing":   { bg: "#dff5e1", color: "#1e7d32" },
         "Approved":  { bg: "#dff5e1", color: "#1e7d32" },
         "Paid":      { bg: "#e8eefc", color: "#0038A8" },
@@ -129,3 +133,29 @@ function renderLoans(loans) {
 }
 
 document.addEventListener("DOMContentLoaded", loadLoans);
+
+if (requestForm) {
+    requestForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const payload = {
+            loan_type: document.getElementById("request_loan_type").value,
+            principal_amount: document.getElementById("request_principal").value,
+            monthly_amortization: document.getElementById("request_amortization").value,
+        };
+
+        requestBtn.disabled = true;
+        requestMsg.classList.add("hidden");
+        try {
+            const { data } = await api.post("me_loans.php", payload);
+            requestMsg.textContent = data.message;
+            requestMsg.className = "msg success";
+            requestForm.reset();
+            await loadLoans();
+        } catch (err) {
+            requestMsg.textContent = apiErrorMessage(err);
+            requestMsg.className = "msg error";
+        } finally {
+            requestBtn.disabled = false;
+        }
+    });
+}

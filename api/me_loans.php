@@ -74,4 +74,45 @@ if ($method === "GET") {
     respond(true, "", $out);
 }
 
+// ---- POST: file a new loan request ----
+// The employee is always taken from the session. A request starts Pending;
+// Payroll/HR processes and approves it from the admin Loans screen.
+if ($method === "POST") {
+    $in           = json_input();
+    $loanType     = trim((string) ($in["loan_type"] ?? ""));
+    $principal    = (float) ($in["principal_amount"] ?? 0);
+    $amortization = (float) ($in["monthly_amortization"] ?? 0);
+
+    $allowedTypes = ["SSS Loan", "Pag-IBIG Loan", "Company Loan", "Cash Advance"];
+    if (!in_array($loanType, $allowedTypes, true)) {
+        respond(false, "Choose a valid loan type.", null, 422);
+    }
+    if ($principal <= 0 || $principal > 10000000) {
+        respond(false, "Principal amount must be greater than zero.", null, 422);
+    }
+    if ($amortization <= 0 || $amortization > $principal) {
+        respond(false, "Monthly amortization must be greater than zero and not exceed the principal.", null, 422);
+    }
+
+    $dup = $pdo->prepare(
+        "SELECT loan_id FROM loans
+         WHERE employee_id = ? AND loan_type = ? AND status = 'Pending'
+         LIMIT 1"
+    );
+    $dup->execute([$empId, $loanType]);
+    if ($dup->fetchColumn()) {
+        respond(false, "You already have a pending $loanType request.", null, 409);
+    }
+
+    $pdo->prepare(
+        "INSERT INTO loans (employee_id, loan_type, principal_amount, monthly_amortization, status)
+         VALUES (?, ?, ?, ?, 'Pending')"
+    )->execute([$empId, $loanType, round($principal, 2), round($amortization, 2)]);
+
+    respond(true, "Loan request submitted for Payroll/HR review.", [
+        "loan_id" => (int) $pdo->lastInsertId(),
+        "status"  => "Pending",
+    ]);
+}
+
 respond(false, "Method not allowed.", null, 405);

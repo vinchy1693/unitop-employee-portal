@@ -34,9 +34,40 @@
 
     <div id="msg" class="msg hidden"></div>
 
-    <div id="kpi-grid" class="kpi-grid">
-        <div class="kpi-tile"><div class="kpi-label">Loading...</div></div>
+    <div class="card">
+        <div class="card-head">
+            <div>
+                <h2 class="card-title">Request a loan</h2>
+                <p class="card-sub">Submit a loan request for Payroll/HR review. Approved loans are deducted from payroll.</p>
+            </div>
+        </div>
+        <div id="loan-request-msg" class="msg hidden"></div>
+        <form id="loan-request-form" class="form-grid">
+            <div>
+                <label>Loan Type</label>
+                <select id="request_loan_type" required>
+                    <option value="">-- Select --</option>
+                    <option>SSS Loan</option>
+                    <option>Pag-IBIG Loan</option>
+                    <option>Company Loan</option>
+                    <option>Cash Advance</option>
+                </select>
+            </div>
+            <div>
+                <label>Principal Amount</label>
+                <input type="number" id="request_principal" min="0.01" step="0.01" required>
+            </div>
+            <div>
+                <label>Monthly Amortization</label>
+                <input type="number" id="request_amortization" min="0.01" step="0.01" required>
+            </div>
+            <div style="display:flex;align-items:end;">
+                <button type="submit" class="btn btn-primary" id="request-loan-btn">Submit Request</button>
+            </div>
+        </form>
     </div>
+
+    <div id="kpi-grid" class="kpi-grid">
 
     <div class="card">
         <div class="card-head">
@@ -105,7 +136,7 @@
 <script src="assets/js/sweetalert2.min.js"></script>
 <script src="assets/js/dialogs.js"></script>
 <script src="assets/js/api.js?v=20261020logoutalert"></script>
-<script src="assets/js/loans.js?v=20261018b"></script>
+<script src="assets/js/loans.js?v=20261021request"></script>
 <script src="assets/js/theme.js"></script>
 </body>
 </html>
