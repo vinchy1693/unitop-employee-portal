@@ -63,12 +63,18 @@ async function openPayslip(id) {
 function renderPayslip(p) {
     const allowances = Array.isArray(p.allowances) ? p.allowances : [];
     const deductions = Array.isArray(p.deductions) ? p.deductions : [];
+    const attendanceDeductions = deductions.filter((d) => d.is_attendance);
+    const otherDeductions = deductions.filter((d) => !d.is_attendance);
 
     const allowRows = allowances.map((a) => `
         <div class="line"><span>${escapeHtml(a.allowance_type)}</span><span>${formatMoney(a.amount)}</span></div>
     `).join("");
 
-    const dedRows = deductions.map((d) => `
+    const attendanceRows = attendanceDeductions.map((d) => `
+        <div class="line"><span>${escapeHtml(d.deduction_type)}</span><span>-${formatMoney(d.amount)}</span></div>
+    `).join("");
+
+    const dedRows = otherDeductions.map((d) => `
         <div class="line"><span>${escapeHtml(d.deduction_type)}</span><span>${formatMoney(d.amount)}</span></div>
     `).join("");
 
@@ -100,7 +106,8 @@ function renderPayslip(p) {
                     <div class="line"><span>Overtime Pay</span><span>${formatMoney(p.overtime_pay)}</span></div>
                     <div class="line"><span>Premium Pay (Rest Day / Holiday)</span><span>${formatMoney(p.premium_pay)}</span></div>
                     ${allowRows}
-                    <div class="line" style="border-top:1px solid #cbd5e1;margin-top:6px;padding-top:8px;font-weight:700;"><span>Gross Pay</span><span>${formatMoney(p.gross_pay)}</span></div>
+                    ${attendanceRows}
+                    <div class="line" style="border-top:1px solid #cbd5e1;margin-top:6px;padding-top:8px;font-weight:700;"><span>Adjusted Gross Pay</span><span>${formatMoney(p.gross_pay)}</span></div>
                 </div>
 
                 <div>

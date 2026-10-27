@@ -55,6 +55,19 @@ if ($method === "GET" && isset($_GET["id"])) {
     $d->execute([$id]);
     $row["deductions"] = $d->fetchAll();
 
+    $attendanceDed = 0.0;
+    $otherDed = 0.0;
+    foreach ($row["deductions"] as &$item) {
+        $type = (string) ($item["deduction_type"] ?? "");
+        $isAttendance = (bool) preg_match('/^(Absences|Late\/Undertime|Undertime)/', $type);
+        if ($isAttendance) $attendanceDed += (float) $item["amount"];
+        else $otherDed += (float) $item["amount"];
+        $item["is_attendance"] = $isAttendance;
+    }
+    unset($item);
+    $row["attendance_deductions"] = round($attendanceDed, 2);
+    $row["other_deductions"] = round($otherDed, 2);
+
     respond(true, "", $row);
 }
 
