@@ -85,6 +85,11 @@ async function loadMyQR() {
                     <div style="font-weight:600;color:#1a1f2e;">Expires: ${escapeHtml(qr.expires_at)}</div>
                     <div style="margin-top:4px;">${qr.purpose === "time_in" ? "Clock in" : qr.purpose === "time_out" ? "Clock out" : "Overtime"} · show this at the on-site scanner</div>
                     <div style="margin-top:4px;font-size:11.5px;">This code refreshes automatically. A screenshot stops working after it expires.</div>
+                    <div style="margin-top:14px;padding:10px 12px;border:1px solid var(--border-mid);border-radius:8px;background:var(--surface-2);text-align:left;">
+                        <div style="font-size:10.5px;font-weight:700;letter-spacing:.8px;color:var(--muted);text-transform:uppercase;margin-bottom:5px;">Code value</div>
+                        <code id="qr-token-value" style="display:block;color:var(--text);font-size:12px;line-height:1.5;word-break:break-all;">${escapeHtml(qr.token)}</code>
+                        <button type="button" id="copy-qr-token" class="btn btn-plain" style="margin-top:8px;padding:5px 10px;font-size:11.5px;">Copy code</button>
+                    </div>
                 </div>
             </div>
         `;
@@ -98,6 +103,17 @@ async function loadMyQR() {
             colorDark: "#0038A8",
             colorLight: "#ffffff",
             correctLevel: QRCode.CorrectLevel.H,
+        });
+
+        document.getElementById("copy-qr-token")?.addEventListener("click", async function () {
+            const value = document.getElementById("qr-token-value")?.textContent || "";
+            try {
+                await navigator.clipboard.writeText(value);
+                this.textContent = "Copied";
+                setTimeout(() => { this.textContent = "Copy code"; }, 1500);
+            } catch (_) {
+                window.prompt("Copy the QR code value:", value);
+            }
         });
 
         // Refresh before the token expires, even while the employee is in line.
