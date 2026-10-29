@@ -112,7 +112,7 @@ if ($purpose === "complete") {
     ]);
 }
 
-$token     = "UNITOP-T-" . bin2hex(random_bytes(24));
+$token     = "UNITOP-T-" . bin2hex(random_bytes(8));
 $tokenHash = hash("sha256", $token);
 $expiresAt = date("Y-m-d H:i:s", time() + PORTAL_QR_TOKEN_TTL_SECONDS);
 
