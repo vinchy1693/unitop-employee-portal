@@ -71,7 +71,7 @@ function renderPayslip(p) {
     `).join("");
 
     const attendanceRows = attendanceDeductions.map((d) => `
-        <div class="line"><span>${escapeHtml(d.deduction_type)}</span><span>-${formatMoney(d.amount)}</span></div>
+        <div class="line"><span>${escapeHtml(d.deduction_type)}</span><span>${formatMoney(d.amount)}</span></div>
     `).join("");
 
     const dedRows = otherDeductions.map((d) => `
@@ -106,8 +106,7 @@ function renderPayslip(p) {
                     <div class="line"><span>Overtime Pay</span><span>${formatMoney(p.overtime_pay)}</span></div>
                     <div class="line"><span>Premium Pay (Rest Day / Holiday)</span><span>${formatMoney(p.premium_pay)}</span></div>
                     ${allowRows}
-                    ${attendanceRows}
-                    <div class="line" style="border-top:1px solid #cbd5e1;margin-top:6px;padding-top:8px;font-weight:700;"><span>Adjusted Gross Pay</span><span>${formatMoney(p.gross_pay)}</span></div>
+                    <div class="line" style="border-top:1px solid #cbd5e1;margin-top:6px;padding-top:8px;font-weight:700;"><span>Gross Pay</span><span>${formatMoney(p.gross_pay)}</span></div>
                 </div>
 
                 <div>
@@ -116,6 +115,7 @@ function renderPayslip(p) {
                     <div class="line"><span>PhilHealth</span><span>${formatMoney(p.philhealth_ee)}</span></div>
                     <div class="line"><span>Pag-IBIG</span><span>${formatMoney(p.pagibig_ee)}</span></div>
                     <div class="line"><span>Withholding Tax</span><span>${formatMoney(p.withholding_tax)}</span></div>
+                    ${attendanceRows}
                     ${dedRows}
                     <div class="line" style="border-top:1px solid #cbd5e1;margin-top:6px;padding-top:8px;font-weight:700;"><span>Total Deductions</span><span>${formatMoney(p.total_deductions)}</span></div>
                 </div>
