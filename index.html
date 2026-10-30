@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0038A8">
 <title>My Dashboard — UNITOP Employee Portal</title>
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/style.css?v=20261031notifications">
 </head>
 <body>
 <nav class="employee-nav">
@@ -40,13 +40,23 @@
         <div class="kpi-tile"><div class="kpi-label">Loading…</div></div>
     </div>
 
+    <div class="card notification-card" id="notification-card">
+        <div class="card-head">
+            <h2 class="card-title">Notifications</h2>
+            <span id="notification-count" class="notification-count">0</span>
+        </div>
+        <div id="notification-list" class="notification-list">
+            <div class="notification-empty">Loading…</div>
+        </div>
+    </div>
+
 </main>
 
 <script src="assets/js/axios.min.js"></script>
 <script src="assets/js/sweetalert2.min.js"></script>
 <script src="assets/js/dialogs.js"></script>
 <script src="assets/js/api.js?v=20261020logoutalert"></script>
-<script src="assets/js/dashboard.js"></script>
+<script src="assets/js/dashboard.js?v=20261031notifications"></script>
 <script src="assets/js/theme.js"></script>
 </body>
 </html>
