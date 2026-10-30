@@ -66,6 +66,16 @@ function renderPayslip(p) {
     const attendanceDeductions = deductions.filter((d) => d.is_attendance);
     const otherDeductions = deductions.filter((d) => !d.is_attendance);
 
+    const holidayPremiums = Array.isArray(p.holiday_premiums) ? p.holiday_premiums : [];
+    const holidayNote = holidayPremiums.map((h) => {
+        const type = h.holiday_type === "Regular"
+            ? "Regular Holiday"
+            : h.holiday_type === "Special"
+                ? "Special Holiday"
+                : "Holiday";
+        return `${escapeHtml(type)} (${Number(h.percentage || 0)}%)`;
+    }).join("<br>");
+
     const allowRows = allowances.map((a) => `
         <div class="line"><span>${escapeHtml(a.allowance_type)}</span><span>${formatMoney(a.amount)}</span></div>
     `).join("");
@@ -104,7 +114,7 @@ function renderPayslip(p) {
                     <h4 style="border-bottom:1px solid #e5e7eb;padding-bottom:6px;font-size:12.5px;color:#0038A8;text-transform:uppercase;">Earnings</h4>
                     <div class="line"><span>Basic Pay</span><span>${formatMoney(p.basic_pay)}</span></div>
                     <div class="line"><span>Overtime Pay</span><span>${formatMoney(p.overtime_pay)}</span></div>
-                    <div class="line"><span>Premium Pay (Rest Day / Holiday)</span><span>${formatMoney(p.premium_pay)}</span></div>
+                    <div class="line"><span>Premium Pay (Rest Day / Holiday)${holidayNote ? `<span style="display:block;margin-top:3px;color:#6b7280;font-size:11px;font-weight:400;">${holidayNote}</span>` : ""}</span><span>${formatMoney(p.premium_pay)}</span></div>
                     ${allowRows}
                     <div class="line" style="border-top:1px solid #cbd5e1;margin-top:6px;padding-top:8px;font-weight:700;"><span>Gross Pay</span><span>${formatMoney(p.gross_pay)}</span></div>
                 </div>
